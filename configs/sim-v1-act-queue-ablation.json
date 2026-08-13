@@ -1,0 +1,100 @@
+{
+  "id": "sim-v1-act-queue-20260921",
+  "frozen_before_execution_utc": "2026-09-21T16:37:55.239199+00:00",
+  "question": "For this fixed ACT-PushT instance, does executing 10 rather than 100 predictions before replanning improve task outcomes, and at what inference cost?",
+  "hypothesis": "The shorter executed horizon improves paired success/coverage; equal or worse outcomes do not support this expectation.",
+  "analysis_unit": "paired seed, n=5, exploratory",
+  "seed_note": "1000 and 1001 already used in engineering pilot; no independent final-test claim",
+  "policy_repo": "aadarshram/act_pusht",
+  "policy_revision": "6d403b142934aaef61fc07f5eec1515c4325751f",
+  "weight_sha256": "dfa923d7f82fc152b5c70e27aa7087ebd0f5fd86a486c22ea255748d0a932208",
+  "predicted_steps": 100,
+  "execution_conditions": [
+    100,
+    10
+  ],
+  "seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004
+  ],
+  "trials": [
+    {
+      "seed": 1000,
+      "execute_steps": 100
+    },
+    {
+      "seed": 1000,
+      "execute_steps": 10
+    },
+    {
+      "seed": 1001,
+      "execute_steps": 10
+    },
+    {
+      "seed": 1001,
+      "execute_steps": 100
+    },
+    {
+      "seed": 1002,
+      "execute_steps": 100
+    },
+    {
+      "seed": 1002,
+      "execute_steps": 10
+    },
+    {
+      "seed": 1003,
+      "execute_steps": 10
+    },
+    {
+      "seed": 1003,
+      "execute_steps": 100
+    },
+    {
+      "seed": 1004,
+      "execute_steps": 100
+    },
+    {
+      "seed": 1004,
+      "execute_steps": 10
+    }
+  ],
+  "ordering": "paired seed order ascending; alternate which condition runs first",
+  "budget": {
+    "total_trials": 10,
+    "max_episode_steps": 300,
+    "max_total_environment_steps": 3000,
+    "batch_size": 1
+  },
+  "fixed": {
+    "env": "gym_pusht/PushT-v0",
+    "control_hz": 10,
+    "input_rgb_hwc": [
+      96,
+      96,
+      3
+    ],
+    "action": "absolute x/y, [0,512]",
+    "device": "cuda",
+    "precision": "float32",
+    "temporal_ensembling": null,
+    "clipping": false,
+    "checkpoint_and_processors": "unchanged",
+    "additional_observation_delay_s": 0,
+    "simulation": "synchronous, physics pauses for computation and logging"
+  },
+  "primary": "paired success difference (10 minus 100), denominator includes every scheduled started trial",
+  "secondary": [
+    "per-seed max/final coverage",
+    "success-only completion time and all-trial termination/steps",
+    "source observation simulation age",
+    "full chunk calls and synchronized inference cost per 100 executed steps",
+    "peak torch allocated memory"
+  ],
+  "failure_handling": "retain rejected/error/timeout records; do not replace seeds or add trials to improve outcomes",
+  "interpretation_limit": "Changes replanning frequency, executed prefix, and observation age together; not a pure delay experiment and not a hardware real-time result.",
+  "warmup": "Native queue comparison once per condition: 2 full forward calls, no env steps, excluded from timing; all state and queues reset before trials"
+}

@@ -1,0 +1,32 @@
+{
+  "status": "draft_not_executed",
+  "fixed_execute_steps": 10,
+  "predicted_steps": 100,
+  "delay_steps": [
+    0,
+    5
+  ],
+  "control_hz": 10,
+  "seeds": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004
+  ],
+  "total_trials": 10,
+  "max_steps_per_trial": 300,
+  "observation_index": "max(0, replan_step-delay_steps)",
+  "modalities": "RGB and state from identical historical step",
+  "ordering": "ascending paired seeds; alternate first condition",
+  "primary": "paired success difference delayed minus zero delay",
+  "implementation_required": [
+    "separate replan_step and observation_source_step",
+    "bounded synchronized RGB/state history",
+    "verify actual input age and saved source equality"
+  ],
+  "checkpoint_revision": "6d403b142934aaef61fc07f5eec1515c4325751f",
+  "no_training": true,
+  "no_new_download": true,
+  "no_hardware": true
+}

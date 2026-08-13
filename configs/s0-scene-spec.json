@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "stage": "S1_development",
+  "purpose": "development_scene_spec_not_formal_evaluation",
+  "physical_robot_actions_authorized": false,
+  "backend": "mujoco",
+  "environment": {
+    "path": ".venv-sim",
+    "mujoco_version": "3.3.7",
+    "policy_runtime": "existing LeRobot environment unchanged; process boundary to be implemented"
+  },
+  "asset": {
+    "repository": "https://api.github.com/repos/google-deepmind/mujoco_menagerie",
+    "commit": "c96a32d28fb5da84da38c1da4d749e7a13212855",
+    "date": "2026-09-23T22:46:38Z"
+  },
+  "pot": {
+    "outer_diameter_m": 0.09,
+    "height_m": 0.05,
+    "mass_kg": 0.02,
+    "source": "operator: outer diameter9cm, height5cm, mass20g; clarified transparent tape roll, radial wall7mm",
+    "measurement_uncertainty": null,
+    "wall_thickness_m": 0.007,
+    "inner_diameter_m": 0.076,
+    "handle_geometry": "none in development model; inferred tape roll",
+    "material": "transparent adhesive tape; exact substrate unspecified",
+    "center_of_mass": "development assumption: geometric center, uniform annulus",
+    "friction": null,
+    "collision_model": "32 convex annular sectors; open central hole",
+    "object_type": "transparent_tape_roll",
+    "inner_diameter_source": "derived: 0.09 - 2*0.007; radial wall interpretation"
+  },
+  "mat": {
+    "size_m": [
+      0.15,
+      0.2
+    ],
+    "source": "operator message: 绿色垫15x20cm",
+    "pose_in_robot_base": null,
+    "thickness_m": null,
+    "placement_policy": "variable across initial conditions; current development position accepted by operator; sampling distribution not frozen"
+  },
+  "table": {
+    "surface_z_in_robot_base_m": 0,
+    "bounds_m": null,
+    "friction": null,
+    "source": "operator confirms base and object on same tabletop; base model frame/table datum assumed zero pending visual alignment"
+  },
+  "cameras": {
+    "observation.images.follower": {
+      "shape_hwc": [
+        480,
+        640,
+        3
+      ],
+      "dtype": "uint8",
+      "color": "RGB",
+      "intrinsics": null,
+      "extrinsics": null,
+      "distortion": null,
+      "timestamp_clock": "sim_ns separated from host_monotonic_ns"
+    },
+    "observation.images.camera2": {
+      "shape_hwc": [
+        480,
+        640,
+        3
+      ],
+      "dtype": "uint8",
+      "color": "RGB",
+      "intrinsics": null,
+      "extrinsics": null,
+      "distortion": null,
+      "timestamp_clock": "sim_ns separated from host_monotonic_ns"
+    }
+  },
+  "mapping": {
+    "body": "q_sim = sign * policy_deg * pi/180 + zero_offset_rad; sign and offset unverified",
+    "gripper": "calibrated_0_100 -> measured opening/hinge map; endpoints unresolved",
+    "range_policy": "reject outside calibrated and mapped MJCF ranges; no clipping or widening",
+    "upstream_defaults": "not physically calibrated"
+  },
+  "pilot_budget": {
+    "class": "C_development_only",
+    "readiness_runs": 1,
+    "readiness_physics_steps_max": 200,
+    "readiness_render_frames_max": 2,
+    "readiness_wall_timeout_s": 60,
+    "robot_or_policy_trials": 0,
+    "later_S1_candidate": {
+      "reset_cases": 3,
+      "fixed_action_trials": 4,
+      "policy_trials_per_model": 2,
+      "max_sim_seconds_per_trial": 20,
+      "status": "3 reset checks and 4 fixed sim-target trials planned; policy trials blocked pending coordinate/camera alignment"
+    },
+    "S2_V_trials": 40,
+    "S3_T_sim_trials": 40,
+    "S3_T_real_trials": 40
+  },
+  "unknowns_do_not_block": [
+    "upstream compile/render capability",
+    "interface development",
+    "parameter source registry"
+  ],
+  "unknowns_block": [
+    "matching real scene acceptance",
+    "physical gripper grasp validation",
+    "formal sim-real comparison"
+  ],
+  "development_assumptions": {
+    "tape_friction": [
+      0.5,
+      0.005,
+      0.0001
+    ],
+    "mat_thickness_m": 0.001,
+    "mat_center_xy_m": [
+      -0.18,
+      0.08
+    ],
+    "tape_center_xy_m": [
+      -0.18,
+      -0.15
+    ],
+    "cameras": "provisional overview and upstream wrist camera; no calibration claim",
+    "control_period_s": 0.02,
+    "physics_timestep_s": 0.005,
+    "purpose": "geometry/reset/fixed sim-radian target checks only; not 30Hz policy evaluation",
+    "ring_segments": 32,
+    "uniform_mass_distribution": true,
+    "transparency": "RGBA approximation without calibrated transmission/refraction",
+    "robot_base_yaw_rad": 3.141592653589793,
+    "robot_base_yaw_source": "operator correction: arm should face objects; 180-degree development scene rotation, not measured extrinsic",
+    "robot_base_position_m": [
+      0.03841106397986879,
+      0.032009219983223994,
+      0
+    ],
+    "robot_base_position_source": "operator requests 5cm farther from tape; translate base along tape-to-base horizontal direction, keep objects fixed"
+  }
+}

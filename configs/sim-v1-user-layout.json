@@ -1,0 +1,28 @@
+{
+  "version": "sim_v1_zero_wrist_base_back_8cm_mat_direction_20260925",
+  "scene": "artifacts/sim-v1-scene-20260925/scene.xml",
+  "robot_base_xy_m": [
+    0.04,
+    -0.035
+  ],
+  "tape_center_xy_m": [
+    -0.18,
+    -0.15
+  ],
+  "green_mat_center_xy_m": [
+    -0.18,
+    0.08
+  ],
+  "base_shift_from_previous_m": [
+    0.08,
+    0.0
+  ],
+  "initial_wrist_roll_deg": 0,
+  "gripper_mount_rotation_deg": -90,
+  "second_camera_parent": "camera_mount_under_gripper",
+  "second_camera_mount": "moves_with_gripper",
+  "scripted_grasp_result": "success_C_development_687_ticks",
+  "act_smolvla_result": "both_timeout_20s_no_tape_contact_C_development",
+  "physical_alignment_verified": false,
+  "formal_S2_S3_complete": false
+}

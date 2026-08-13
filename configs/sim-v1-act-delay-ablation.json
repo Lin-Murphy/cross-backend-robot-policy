@@ -1,0 +1,123 @@
+{
+  "id": "sim-v1-act-delay-20260921",
+  "frozen_before_execution_utc": "2026-09-21T17:37:42.421143+00:00",
+  "question": "With fixed execute=10, how does 5-step historical RGB/state input affect paired task outcomes?",
+  "hypothesis": "Delayed input reduces paired success or coverage; equal or better outcomes do not support the hypothesis.",
+  "analysis_unit": "paired seed, n=5, exploratory",
+  "seed_note": "Seeds 2000\u20132004 have not been used in the local pilots; no claim of independence from model training data.",
+  "policy_repo": "aadarshram/act_pusht",
+  "policy_revision": "6d403b142934aaef61fc07f5eec1515c4325751f",
+  "weight_sha256": "dfa923d7f82fc152b5c70e27aa7087ebd0f5fd86a486c22ea255748d0a932208",
+  "predicted_steps": 100,
+  "execution_conditions": [
+    10
+  ],
+  "seeds": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004
+  ],
+  "trials": [
+    {
+      "seed": 2000,
+      "execute_steps": 10,
+      "delay_steps": 0
+    },
+    {
+      "seed": 2000,
+      "execute_steps": 10,
+      "delay_steps": 5
+    },
+    {
+      "seed": 2001,
+      "execute_steps": 10,
+      "delay_steps": 5
+    },
+    {
+      "seed": 2001,
+      "execute_steps": 10,
+      "delay_steps": 0
+    },
+    {
+      "seed": 2002,
+      "execute_steps": 10,
+      "delay_steps": 0
+    },
+    {
+      "seed": 2002,
+      "execute_steps": 10,
+      "delay_steps": 5
+    },
+    {
+      "seed": 2003,
+      "execute_steps": 10,
+      "delay_steps": 5
+    },
+    {
+      "seed": 2003,
+      "execute_steps": 10,
+      "delay_steps": 0
+    },
+    {
+      "seed": 2004,
+      "execute_steps": 10,
+      "delay_steps": 0
+    },
+    {
+      "seed": 2004,
+      "execute_steps": 10,
+      "delay_steps": 5
+    }
+  ],
+  "ordering": "paired seed order ascending; alternate which condition runs first",
+  "budget": {
+    "total_trials": 10,
+    "max_episode_steps": 300,
+    "max_total_environment_steps": 3000,
+    "batch_size": 1
+  },
+  "fixed": {
+    "env": "gym_pusht/PushT-v0",
+    "control_hz": 10,
+    "input_rgb_hwc": [
+      96,
+      96,
+      3
+    ],
+    "action": "absolute x/y, [0,512]",
+    "device": "cuda",
+    "precision": "float32",
+    "temporal_ensembling": null,
+    "clipping": false,
+    "checkpoint_and_processors": "unchanged",
+    "additional_observation_delay_s": [
+      0,
+      0.5
+    ],
+    "simulation": "synchronous, physics pauses for computation and logging",
+    "execute_steps": 10
+  },
+  "primary": "paired success difference delayed minus zero-delay; all scheduled started trials retained",
+  "secondary": [
+    "per-seed max/final coverage",
+    "successful completion time and all-trial termination",
+    "realized input age and action-source age",
+    "full-chunk calls and compute cost per 100 executed steps",
+    "peak torch allocated memory"
+  ],
+  "failure_handling": "retain rejected/error/timeout records; do not replace seeds or add trials to improve outcomes",
+  "interpretation_limit": "Synchronous simulation with fixed replanning interval; input RGB and state delayed together. Not hardware compute delay or a universal policy claim.",
+  "warmup": "One native queue equivalence check at execute=10: two forward calls, zero env steps, excluded from measurements; reset before rollouts",
+  "delay_conditions": [
+    0,
+    5
+  ],
+  "history": {
+    "source_index": "max(0,replan_step-delay_steps)",
+    "capacity": 6,
+    "modalities": "RGB and agent position from the same historical observation",
+    "startup": "reuse reset observation; log realized delay, no hidden warmup steps"
+  }
+}

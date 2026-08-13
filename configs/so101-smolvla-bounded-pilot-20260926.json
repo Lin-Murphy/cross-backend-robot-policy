@@ -1,0 +1,85 @@
+{
+  "trial_kind": "development_pilot",
+  "source": "2026-09-26 newly proposed, user-review-required SO101 single-rollout profile; trial-specific stop envelope, not a verified general safety limit",
+  "raw_lower": [
+    1800,
+    1150,
+    1170,
+    2500,
+    1800,
+    1900
+  ],
+  "raw_upper": [
+    2460,
+    2520,
+    2710,
+    3185,
+    2120,
+    2440
+  ],
+  "max_target_step_ticks": [
+    120,
+    120,
+    120,
+    120,
+    40,
+    25
+  ],
+  "max_target_rate_ticks_s": [
+    1200,
+    1200,
+    1200,
+    1200,
+    400,
+    250
+  ],
+  "max_measured_rate_ticks_s": [
+    1600,
+    1600,
+    1600,
+    1600,
+    600,
+    400
+  ],
+  "max_feedback_gap_ticks": [
+    150,
+    150,
+    150,
+    150,
+    60,
+    35
+  ],
+  "goal_velocity_raw": [
+    1200,
+    1200,
+    1200,
+    1200,
+    400,
+    250
+  ],
+  "min_period_ns": 100000000,
+  "max_period_ns": 2000000000,
+  "max_host_observation_age_ns": 2000000000,
+  "action_hz_nominal": 10,
+  "execute_steps_per_chunk": 10,
+  "max_wall_seconds": 20,
+  "max_applied_actions": 150,
+  "capture_timestamp_semantics": "host read end only; sensor exposure unknown",
+  "formal_trial": false,
+  "reference_raw": [
+    2076,
+    1399,
+    2634,
+    3122,
+    1969,
+    2287
+  ],
+  "max_initial_deviation_ticks": 20,
+  "follower_clear_roi_xyxy": [
+    190,
+    250,
+    310,
+    330
+  ],
+  "max_roi_dark_fraction_below_gray_100": 0.05
+}
