@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-ORDER=ROOT/'artifacts/r0-finalization-20260923/trial-order.json'
+ORDER=ROOT/'configs/move-pot-trial-order.json'
 JOINTS=['shoulder_pan.pos','shoulder_lift.pos','elbow_flex.pos','wrist_flex.pos','wrist_roll.pos','gripper.pos']
 UNITS=['deg']*5+['calibrated_0_100']
 

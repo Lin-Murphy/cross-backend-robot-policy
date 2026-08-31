@@ -1,0 +1,358 @@
+{
+  "schema_version": 1,
+  "scope": "compact historical results; raw logs and media intentionally removed",
+  "source_sha256": {
+    "aloha": "f2e6afbe80ea40cf242bef0338856d7b9307fd5e15b9a87541cd512d13958ab7",
+    "so101_success_eval": "96e73dea55a5a33f604d615d39ff4f8c804f24408b36ea0d12226d880ee2725f",
+    "so101_success_audit": "f265580b803fa90ef762e6fb30b66e7349f23b326cd0d2d7e01e6fb9900af30f",
+    "so101_success_completion": "b0bfa51ffffb1c19ddff89c0e397ef7812661b99d40c88cd0d6c7e135daf3099",
+    "so101_act_1": "5646b147d723587a00d177a3a6fe0829f56bc0d08e5c477baf950f995d6ae01b",
+    "so101_act_2": "09a5bd223db44aadeed50fcb54d2c69eaef6ecba232296751fd72d8401e5ddeb",
+    "so101_act_3": "7cc7e6be681df09c0f178011b5fc3979dbe6897e3f61d9c76a89218548097f0e"
+  },
+  "aloha_transfer_cube": {
+    "task": "gym_aloha/AlohaTransferCube-v0",
+    "criterion": "episode maximum reward >= 4",
+    "seeds": [
+      1000,
+      1029
+    ],
+    "episodes_each": 30,
+    "act_successes": 11,
+    "dot_successes": 26,
+    "rows": [
+      {
+        "seed": 1000,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1001,
+        "act_reward": 4.0,
+        "dot_reward": 2.0
+      },
+      {
+        "seed": 1002,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1003,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1004,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1005,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1006,
+        "act_reward": 0.0,
+        "dot_reward": 2.0
+      },
+      {
+        "seed": 1007,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1008,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1009,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1010,
+        "act_reward": 1.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1011,
+        "act_reward": 4.0,
+        "dot_reward": 2.0
+      },
+      {
+        "seed": 1012,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1013,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1014,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1015,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1016,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1017,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1018,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1019,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1020,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1021,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1022,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1023,
+        "act_reward": 1.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1024,
+        "act_reward": 1.0,
+        "dot_reward": 2.0
+      },
+      {
+        "seed": 1025,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1026,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1027,
+        "act_reward": 2.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1028,
+        "act_reward": 0.0,
+        "dot_reward": 4.0
+      },
+      {
+        "seed": 1029,
+        "act_reward": 4.0,
+        "dot_reward": 4.0
+      }
+    ]
+  },
+  "so101_smolvla": {
+    "record": {
+      "schema_version": 1,
+      "backend": "so101",
+      "task": "move pot",
+      "policy": "SmolVLA",
+      "scope": "development_trial",
+      "status": "success",
+      "outcome": true,
+      "outcome_source": "onsite_operator_and_post_scene",
+      "predicted_actions": 494,
+      "applied_actions": 494,
+      "physical_dispatches": 494,
+      "task_feedback_available": true,
+      "capture_timestamps_verified": false,
+      "action_clock_kind": "host_monotonic",
+      "evidence_sha256": {
+        "summary": "3e1f0005318042f2d6ceb00a37f56f429a857ccefad6accd199524098e595825",
+        "hardware_events": "081882deb962b0f5737ffcc433b4b4742afcc0241f2216b3299ef2d0e24620dd",
+        "profile": "e80bb6a1bb02e105dbc8e0185e65d5ef23fa6598614ed7d66e6356f395c3228a",
+        "dataset_info": "26538a184de33c8dc4bd5ea6c01b6f930ebda755c89b66c6ebade410253bfce1",
+        "operator_observation": "ff2ff6163f71b41177b61094be49fd4013774f6ae198d1aa528f5bd1821af9bc"
+      }
+    },
+    "formal_trial_count": 0,
+    "ordered_audit": {
+      "status": "passed",
+      "run": "artifacts/so101-shared-boundary-real-pilot-20260927-attempt09",
+      "paired_observations_actions_packets": 494,
+      "trailing_rejected_candidate": false,
+      "rejection_stage": null,
+      "unique_observation_ids": 494,
+      "max_observation_event_to_receipt_ms": 418.984058,
+      "stop_hold_after_last_receipt": true,
+      "camera_sensor_timestamps_verified": false,
+      "raw_transport_is_per_motor_ack": false,
+      "summary_sha256": "3e1f0005318042f2d6ceb00a37f56f429a857ccefad6accd199524098e595825",
+      "events_sha256": "081882deb962b0f5737ffcc433b4b4742afcc0241f2216b3299ef2d0e24620dd",
+      "calibration_summary_sha256": "47bb38461e1a8a01e5b4c3b7b71588bf7231dd4cd3d1f4220176b06b97940ff8"
+    },
+    "completion": {
+      "schema_version": 1,
+      "backend": "so101",
+      "task": "move pot",
+      "run_status": "success",
+      "stages": {
+        "object_on_target": {
+          "state": "yes",
+          "source": "operator_success_and_post_run_follower_image_tape_on_mat"
+        },
+        "object_released": {
+          "state": "yes",
+          "source": "operator_reports_tape_detached_and_post_run_image_tape_on_mat"
+        },
+        "robot_withdrawn": {
+          "state": "unknown",
+          "source": "no_agreed_withdrawal_pose_or_contact_measurement"
+        },
+        "returned_to_start": {
+          "state": "no",
+          "source": "start_end_raw_positions_differ"
+        },
+        "normal_end": {
+          "state": "yes",
+          "source": "rollout_ended_without_guard_rejection_and_stop_hold_returned"
+        }
+      },
+      "task_required": [
+        "object_on_target",
+        "object_released"
+      ],
+      "task_state": "yes",
+      "full_cycle_required": [
+        "object_on_target",
+        "object_released",
+        "robot_withdrawn",
+        "returned_to_start",
+        "normal_end"
+      ],
+      "full_cycle_state": "no",
+      "evidence_sha256": {
+        "raw_summary": "3e1f0005318042f2d6ceb00a37f56f429a857ccefad6accd199524098e595825",
+        "hardware_events": "081882deb962b0f5737ffcc433b4b4742afcc0241f2216b3299ef2d0e24620dd",
+        "operator": "ff2ff6163f71b41177b61094be49fd4013774f6ae198d1aa528f5bd1821af9bc",
+        "post_scene": "70b9dc40e96d123d8e0b173ec3b524a7ed04bb05ab44433f1d3144f5fe672f99"
+      }
+    }
+  },
+  "so101_act_trials": [
+    {
+      "record": {
+        "schema_version": 1,
+        "backend": "so101",
+        "task": "move pot",
+        "policy": "ACT",
+        "scope": "development_trial",
+        "status": "aborted",
+        "outcome": null,
+        "outcome_source": null,
+        "predicted_actions": 51,
+        "applied_actions": 50,
+        "physical_dispatches": 50,
+        "task_feedback_available": false,
+        "capture_timestamps_verified": false,
+        "action_clock_kind": "host_monotonic",
+        "evidence_sha256": {
+          "summary": "86a46069d3958a77403701537a8229d0f6d7959db17fd6d02ce3f3e91b6d0ccc",
+          "hardware_events": "2ca04b7c55f5a393abd4c0cf5031b25d4e8fc0947735a0c2062492f2d277dca6",
+          "profile": "5f91ee636b4dbf4fb1aed86c35cab11adbf6f4d5a0d694623104e830205157e6",
+          "dataset_info": "910dc65b1b6cb2efaacbc4c91436fbb5a06b17bb6de1ccd503e51b9e15c23c64"
+        }
+      },
+      "formal_trial_count": 0,
+      "shared_receipt_accepted": 50,
+      "shared_receipt_rejected": 1
+    },
+    {
+      "record": {
+        "schema_version": 1,
+        "backend": "so101",
+        "task": "move pot",
+        "policy": "ACT",
+        "scope": "development_trial",
+        "status": "aborted",
+        "outcome": null,
+        "outcome_source": null,
+        "predicted_actions": 51,
+        "applied_actions": 50,
+        "physical_dispatches": 50,
+        "task_feedback_available": false,
+        "capture_timestamps_verified": false,
+        "action_clock_kind": "host_monotonic",
+        "evidence_sha256": {
+          "summary": "5617a55b2decb51d65be5323c867a30f219a4b551b2fda0997e3502121a9fdce",
+          "hardware_events": "6d184b5e6913251776c1e6e8a79c869ee4e8b9a3589405940cb55d9da2805648",
+          "profile": "3a6514bb8efc3b90ac921bfccc691c1f8fdf4aa92c65d7e905a3fca25031c45a",
+          "dataset_info": "910dc65b1b6cb2efaacbc4c91436fbb5a06b17bb6de1ccd503e51b9e15c23c64"
+        }
+      },
+      "formal_trial_count": 0,
+      "shared_receipt_accepted": 50,
+      "shared_receipt_rejected": 1
+    },
+    {
+      "record": {
+        "schema_version": 1,
+        "backend": "so101",
+        "task": "move pot",
+        "policy": "ACT",
+        "scope": "development_trial",
+        "status": "aborted",
+        "outcome": null,
+        "outcome_source": null,
+        "predicted_actions": 51,
+        "applied_actions": 50,
+        "physical_dispatches": 50,
+        "task_feedback_available": false,
+        "capture_timestamps_verified": false,
+        "action_clock_kind": "host_monotonic",
+        "evidence_sha256": {
+          "summary": "6810bb5abdb90d90bc64a2462fa1d512a575706f86cf145d7afe9af99cd19376",
+          "hardware_events": "958ae20d13f8850b29c9b5733599df61dbf4523d5ed333326cc7ac142e590ba0",
+          "profile": "91b5962694a403ee0e8445d7aeb73932379538574b9534c530f0c95dce584676",
+          "dataset_info": "910dc65b1b6cb2efaacbc4c91436fbb5a06b17bb6de1ccd503e51b9e15c23c64"
+        }
+      },
+      "formal_trial_count": 0,
+      "shared_receipt_accepted": 50,
+      "shared_receipt_rejected": 1
+    }
+  ],
+  "simulation_fixed_trajectory": {
+    "status": "success",
+    "control_steps": 799,
+    "policy_used": false
+  },
+  "limitations": [
+    "No raw videos, camera frames or packet events retained in Git",
+    "SO101 success is one development trial, not a success-rate estimate",
+    "ACT real task outcomes are unknown",
+    "SO101 versus MuJoCo results are not a paired performance comparison"
+  ]
+}

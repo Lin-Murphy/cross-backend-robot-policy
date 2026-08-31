@@ -19,7 +19,7 @@ class FakeBus:
 class FeedbackWaitTest(unittest.TestCase):
     def setUp(self):
         self.config=json.loads(Path('configs/so101-smolvla-feedback-wait-pilot-20260927.json').read_text())
-        self.cal=json.loads(Path('artifacts/so101-bounded-smolvla-pilot-20260927-postcheck/summary.json').read_text())['hardware_calibration']
+        self.cal=json.loads((Path(__file__).parent/'fixtures/so101-calibration.json').read_text())
         keys=PhysicalDispatchLimits.__dataclass_fields__
         limits=PhysicalDispatchLimits(**{k:tuple(self.config[k]) if isinstance(self.config[k],list) else self.config[k]
                                          for k in keys}).validate(self.cal)

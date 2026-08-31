@@ -57,3 +57,10 @@ checkpoints/
 !/artifacts/s0-inventory-20260925/upstream/assets/
 /artifacts/s0-inventory-20260925/upstream/assets/**
 !/artifacts/s0-inventory-20260925/upstream/assets/*.stl
+!/artifacts/sim-cube-v1-20260925/scene.xml
+!/artifacts/sim-v1-scene-20260925/
+/artifacts/sim-v1-scene-20260925/**
+!/artifacts/sim-v1-scene-20260925/scene.xml
+!/artifacts/s1-base-spacing-20260925/
+/artifacts/s1-base-spacing-20260925/**
+!/artifacts/s1-base-spacing-20260925/scene.xml

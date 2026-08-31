@@ -1,0 +1,285 @@
+{
+  "seed": 20260923,
+  "trials": [
+    {
+      "trial_id": 1,
+      "initial_condition_id": "P01",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 2,
+      "initial_condition_id": "P01",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 3,
+      "initial_condition_id": "P01",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 4,
+      "initial_condition_id": "P01",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 5,
+      "initial_condition_id": "P02",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 6,
+      "initial_condition_id": "P02",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 7,
+      "initial_condition_id": "P02",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 8,
+      "initial_condition_id": "P02",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 9,
+      "initial_condition_id": "P03",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 10,
+      "initial_condition_id": "P03",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 11,
+      "initial_condition_id": "P03",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 12,
+      "initial_condition_id": "P03",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 13,
+      "initial_condition_id": "P04",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 14,
+      "initial_condition_id": "P04",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 15,
+      "initial_condition_id": "P04",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 16,
+      "initial_condition_id": "P04",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 17,
+      "initial_condition_id": "P05",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 18,
+      "initial_condition_id": "P05",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 19,
+      "initial_condition_id": "P05",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 20,
+      "initial_condition_id": "P05",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 21,
+      "initial_condition_id": "P06",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 22,
+      "initial_condition_id": "P06",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 23,
+      "initial_condition_id": "P06",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 24,
+      "initial_condition_id": "P06",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 25,
+      "initial_condition_id": "P07",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 26,
+      "initial_condition_id": "P07",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 27,
+      "initial_condition_id": "P07",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 28,
+      "initial_condition_id": "P07",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 29,
+      "initial_condition_id": "P08",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 30,
+      "initial_condition_id": "P08",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 31,
+      "initial_condition_id": "P08",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 32,
+      "initial_condition_id": "P08",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 33,
+      "initial_condition_id": "P09",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 34,
+      "initial_condition_id": "P09",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 35,
+      "initial_condition_id": "P09",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 36,
+      "initial_condition_id": "P09",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 37,
+      "initial_condition_id": "P10",
+      "policy": "ACT",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 38,
+      "initial_condition_id": "P10",
+      "policy": "ACT",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 39,
+      "initial_condition_id": "P10",
+      "policy": "SmolVLA",
+      "condition": "baseline",
+      "status": "not_run"
+    },
+    {
+      "trial_id": 40,
+      "initial_condition_id": "P10",
+      "policy": "SmolVLA",
+      "condition": "added_observation_age",
+      "status": "not_run"
+    }
+  ]
+}

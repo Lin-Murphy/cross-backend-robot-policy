@@ -16,7 +16,7 @@ class FakeBus:
 
 class DispatchTest(unittest.TestCase):
     def setUp(self):
-        self.cal=json.loads(Path('artifacts/so101-pose-alignment-postcheck-20260926/summary.json').read_text())['hardware_calibration']
+        self.cal=json.loads((Path(__file__).parent/'fixtures/so101-calibration.json').read_text())
         self.position=(2076,1399,2634,3122,1969,2287)
         self.bus=FakeBus(self.position);self.events=[];self.clock=[1_000_000_000]
         self.limits=PhysicalDispatchLimits(

@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def fixture():
-    data=json.loads((ROOT/'artifacts/r1-parallel-preparation-20260924/record_templates/trials.json').read_text())
+    data=json.loads((ROOT/'tests/fixtures/trials.json').read_text())
     data['synthetic_fixture']=True
     return data
 
