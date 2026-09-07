@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "backend": "so101",
+  "task": "move_pot",
+  "policies": [{"name": "smolvla"}],
+  "episodes": 1
+}

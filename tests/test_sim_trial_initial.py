@@ -6,7 +6,7 @@ import numpy as np
 from cross_backend.sim_trial_initial import apply_initial_condition, load_initial_condition, initial_geometry_sha256
 from cross_backend.tape_sim_backend import TapeSimBackend
 
-SCENE=Path(__file__).resolve().parents[1]/'artifacts/sim-v1-scene-20260925/scene.xml'
+SCENE=Path(__file__).resolve().parents[1]/'assets/so101/tape.xml'
 
 
 class SimTrialInitialTests(unittest.TestCase):

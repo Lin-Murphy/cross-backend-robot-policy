@@ -1,3 +1,0 @@
-# Pure-simulation fixed-script demo only; Python 3.12 and system ffmpeg are also required.
-mujoco==3.3.7
-numpy==2.5.3

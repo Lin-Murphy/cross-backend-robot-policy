@@ -1,0 +1,634 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-09-28",
+  "scope": "fresh unified-entry comparisons; raw evidence retained locally under artifacts/studies",
+  "studies": {
+    "aloha": {
+      "study_id": "aloha-unified-30-20260928-cuda",
+      "scope": "comparison of concrete deployment systems; native evaluator versions and preprocessing differ",
+      "backend": "aloha",
+      "task": "transfer_cube",
+      "left_policy": "act",
+      "right_policy": "dot",
+      "execution_status": "completed",
+      "groups": [
+        {
+          "policy": "act",
+          "planned": 30,
+          "recorded": 30,
+          "known": 30,
+          "unknown_or_missing": 0,
+          "successes": 14,
+          "success_rate_known": 0.4666666666666667,
+          "wilson95_known": [
+            0.30232388907699753,
+            0.638577003801267
+          ],
+          "success_rate_bounds_all_planned": [
+            0.4666666666666667,
+            0.4666666666666667
+          ],
+          "task_status_counts": {
+            "success": 14,
+            "failed": 16
+          },
+          "execution_status_counts": {
+            "completed": 1
+          }
+        },
+        {
+          "policy": "dot",
+          "planned": 30,
+          "recorded": 30,
+          "known": 30,
+          "unknown_or_missing": 0,
+          "successes": 27,
+          "success_rate_known": 0.9,
+          "wilson95_known": [
+            0.7437891742081593,
+            0.9654001112526658
+          ],
+          "success_rate_bounds_all_planned": [
+            0.9,
+            0.9
+          ],
+          "task_status_counts": {
+            "success": 27,
+            "failed": 3
+          },
+          "execution_status_counts": {
+            "completed": 1
+          }
+        }
+      ],
+      "paired": {
+        "pairs": 30,
+        "difference_right_minus_left": 0.43333333333333335,
+        "bootstrap95": [
+          0.23333333333333334,
+          0.6333333333333333
+        ],
+        "bootstrap_seed": 20260928,
+        "left_only": 1,
+        "right_only": 14,
+        "both_success": 13,
+        "both_failure": 2,
+        "mcnemar_exact_two_sided": 0.0009765625
+      },
+      "excluded_pairs": [],
+      "interpretation": "Descriptive finite sample of deployment systems. Unknown and missing outcomes are excluded from binary pair statistics and shown separately. Bootstrap intervals may degenerate with uniform outcomes; they do not establish equivalence.",
+      "pairs": [
+        {
+          "pair_id": "seed-2000",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2001",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2002",
+          "left_status": "failed",
+          "right_status": "failed",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "seed-2003",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2004",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2005",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2006",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2007",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2008",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2009",
+          "left_status": "failed",
+          "right_status": "failed",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "seed-2010",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2011",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2012",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2013",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2014",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2015",
+          "left_status": "success",
+          "right_status": "failed",
+          "left_outcome": true,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "seed-2016",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2017",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2018",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2019",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2020",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2021",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2022",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2023",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2024",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2025",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2026",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2027",
+          "left_status": "failed",
+          "right_status": "success",
+          "left_outcome": false,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2028",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        },
+        {
+          "pair_id": "seed-2029",
+          "left_status": "success",
+          "right_status": "success",
+          "left_outcome": true,
+          "right_outcome": true
+        }
+      ],
+      "sources": {
+        "artifacts/studies/model-comparison-cuda-20260928/aloha-analysis/comparison.json": "1e6352dd051a67018575edde8ad4fed6126f8a5d0e489602296ea8edb5a048ca",
+        "artifacts/studies/model-comparison-cuda-20260928/aloha-protocol.json": "2f735ae50dc0cd070d426c450524238c9c27f77e4c9ea62a3cec15b179c666e2",
+        "artifacts/studies/model-comparison-cuda-20260928/aloha-run/results.json": "45a0388bdf5d9eb3f80c2b18548d38d024242d944edb2f42d8a47d17272dc0f8"
+      },
+      "checkpoint_sha256": {
+        "act": "a190eb3f47c8daa51395893af49f9df55977d777575789c1599deea6115551fa",
+        "dot": "e9212b744bed2cfe02b1b116c01043432c35e0be161157054b2583459beb6414"
+      },
+      "protocol": {
+        "schema_version": 1,
+        "study_id": "aloha-unified-30-20260928-cuda",
+        "frozen_utc": "2026-09-28T17:17:52.733819+00:00",
+        "backend": "aloha",
+        "task": "transfer_cube",
+        "design": "30 paired requested environment seeds, 2000..2029; fresh evaluation, not selected by outcome",
+        "primary_metric": "episode max reward >= 4",
+        "episodes_per_policy": 30,
+        "episode_length": 400,
+        "first_seed": 2000,
+        "device": "cuda",
+        "environment": {
+          "OMP_NUM_THREADS": "2",
+          "MKL_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "2"
+        },
+        "model_manifests": {
+          "act": {
+            "config.json": "d7607f5329048847df0547a3e04ff100221430e6490607e9d3d4df9302f200b9",
+            "model.safetensors": "a190eb3f47c8daa51395893af49f9df55977d777575789c1599deea6115551fa",
+            "policy_postprocessor.json": "ee37b39ca2c4815e8645730c5668052409f3eaf0a04c110de7fd2a0d34220ae3",
+            "policy_postprocessor_step_0_unnormalizer_processor.safetensors": "beaee74d7bda0ebc6995384e3a02b76ce6cea54bc1af6bb1cb55854c79549303",
+            "policy_preprocessor.json": "ba57cec0069806bddca8c9e2cbb16c83e76e523d7670a916de8c15e40f3344fc",
+            "policy_preprocessor_step_3_normalizer_processor.safetensors": "beaee74d7bda0ebc6995384e3a02b76ce6cea54bc1af6bb1cb55854c79549303",
+            "train_config.json": "cc8ca6746dc807d1eca4fec66fa4932a9b5f2704c5a28bbe5442531ba342feff"
+          },
+          "dot": {
+            "config.json": "406e001bafef28514d3da4cd0fdcc7050ec74f3fc9497ab8c5945738dc432edb",
+            "model.safetensors": "e9212b744bed2cfe02b1b116c01043432c35e0be161157054b2583459beb6414",
+            "train_config.json": "ad329ab5a7b126ba7ffc53a1a539f585bd5bdf3dce1c9e112aee10f059fb4c42"
+          }
+        },
+        "code_sha256": {
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/scripts/evaluate.py": "94ffc9b2c2a3f75636c53e0afa9ba291bc024cd308b556b372bf3691e9573e7e",
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/src/cross_backend/evaluation.py": "e088ddb6d40ae1b7784585f804ff6b38f8ed970e68e6514579b8865fc2b4646d"
+        },
+        "config_sha256": "9307cc061fb99b95ebf2c5ea16b5c90b5319da4fd669079b2819fe58edd985cb",
+        "scope": "comparison of concrete deployment systems; native evaluator versions and preprocessing differ",
+        "raw_evidence_retention": "keep config, plan, native scores, logs, and all videos emitted by native evaluators; native evaluators record at most 10 videos per policy",
+        "platform_change_reason": "CPU runtime/observation age gates; CPU outputs retained separately; identical models, initial cases and metrics",
+        "previous_protocol": {
+          "path": "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/artifacts/studies/model-comparison-20260928/aloha-protocol.json",
+          "sha256": "2df55a763112e3035c3812a3b2a020771ae232934742b0aa143ce1b50aecff03"
+        }
+      }
+    },
+    "mujoco": {
+      "study_id": "move-pot-unified-10-20260928-cuda",
+      "scope": "nominal simulation comparison; no verified physical alignment, no sim-to-real inference",
+      "backend": "mujoco",
+      "task": "move_pot",
+      "left_policy": "act",
+      "right_policy": "smolvla",
+      "execution_status": "completed",
+      "groups": [
+        {
+          "policy": "act",
+          "planned": 10,
+          "recorded": 10,
+          "known": 10,
+          "unknown_or_missing": 0,
+          "successes": 0,
+          "success_rate_known": 0.0,
+          "wilson95_known": [
+            0.0,
+            0.2775327998628892
+          ],
+          "success_rate_bounds_all_planned": [
+            0.0,
+            0.0
+          ],
+          "task_status_counts": {
+            "timeout": 10
+          },
+          "execution_status_counts": {
+            "completed": 10
+          }
+        },
+        {
+          "policy": "smolvla",
+          "planned": 10,
+          "recorded": 10,
+          "known": 10,
+          "unknown_or_missing": 0,
+          "successes": 0,
+          "success_rate_known": 0.0,
+          "wilson95_known": [
+            0.0,
+            0.2775327998628892
+          ],
+          "success_rate_bounds_all_planned": [
+            0.0,
+            0.0
+          ],
+          "task_status_counts": {
+            "timeout": 10
+          },
+          "execution_status_counts": {
+            "completed": 10
+          }
+        }
+      ],
+      "paired": {
+        "pairs": 10,
+        "difference_right_minus_left": 0.0,
+        "bootstrap95": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_seed": 20260928,
+        "left_only": 0,
+        "right_only": 0,
+        "both_success": 0,
+        "both_failure": 10,
+        "mcnemar_exact_two_sided": 1.0
+      },
+      "excluded_pairs": [],
+      "interpretation": "Descriptive finite sample of deployment systems. Unknown and missing outcomes are excluded from binary pair statistics and shown separately. Bootstrap intervals may degenerate with uniform outcomes; they do not establish equivalence.",
+      "pairs": [
+        {
+          "pair_id": "C01",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C02",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C03",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C04",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C05",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C06",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C07",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C08",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C09",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        },
+        {
+          "pair_id": "C10",
+          "left_status": "timeout",
+          "right_status": "timeout",
+          "left_outcome": false,
+          "right_outcome": false
+        }
+      ],
+      "sources": {
+        "artifacts/studies/model-comparison-cuda-20260928/mujoco-analysis/comparison.json": "c3a69cc351fee42d6266174ff28fc397b6e08264c32f0094201c52dacf00c632",
+        "artifacts/studies/model-comparison-cuda-20260928/mujoco-protocol.json": "b8b0023406abe08d50852e25bd0626dd2654ef411fc79367c442e9453bb1a1af",
+        "artifacts/studies/model-comparison-cuda-20260928/mujoco-run/results.json": "a96386b46b9eee2d0acd850aa9b6b5244446dc77ab213bcdb432e6f35c66b4b9"
+      },
+      "checkpoint_sha256": {
+        "act": "8a534a9e96a5d84c37de56539cd4969f39660f82bccdff5adba244820c29189b",
+        "smolvla": "aab242b4414d70f261402dad07a4589515eb2d735d282d409c4c0de3f663de87"
+      },
+      "protocol": {
+        "schema_version": 1,
+        "study_id": "move-pot-unified-10-20260928-cuda",
+        "frozen_utc": "2026-09-28T17:17:52.734157+00:00",
+        "backend": "mujoco",
+        "task": "move_pot",
+        "design": "10 fixed C-development geometries x ACT and SmolVLA; no selection after observing policy results",
+        "primary_metric": "TapeTaskEvaluator placement success",
+        "episodes_per_policy": 10,
+        "max_control_ticks": 600,
+        "control_hz": 30,
+        "first_seed": 2000,
+        "seed_role": "policy_sampling_only",
+        "device": "cuda",
+        "environment": {
+          "OMP_NUM_THREADS": "2",
+          "MKL_NUM_THREADS": "2",
+          "OPENBLAS_NUM_THREADS": "2"
+        },
+        "model_manifests": {
+          "act": {
+            "config.json": "10077fafe3b989509507f097f24500b6183ec9e145ff342f0fe6f9044ed7e395",
+            "model.safetensors": "8a534a9e96a5d84c37de56539cd4969f39660f82bccdff5adba244820c29189b",
+            "policy_postprocessor.json": "648b415125a183dfd6cbc47c1dc04ab3f2d912654ef22a12ca5e8b93d7d85cdd",
+            "policy_postprocessor_step_0_unnormalizer_processor.safetensors": "977b489c7640d95720e6922b713bfb5e60a1b22aabb4ed0b28e53c6406988d1e",
+            "policy_preprocessor.json": "8bf3478ff876d0ba5a14c12adec2cc75b67bb0b77c207ef853271643bbb3a0f6",
+            "policy_preprocessor_step_3_normalizer_processor.safetensors": "af4fab702bc286c7b0815d5be7c5ec506133234b574b4e414130921be243b921",
+            "train_config.json": "952c8bb1b1a9ab5f4d61adf9ea522905239d876b658eea092e8d3229a551b844"
+          },
+          "smolvla": {
+            "config.json": "3d3dc6440121870043a217ab4e2d1d08aa599d92a491d0024a9aebd0ed3108f8",
+            "model.safetensors": "aab242b4414d70f261402dad07a4589515eb2d735d282d409c4c0de3f663de87",
+            "policy_postprocessor.json": "2b78bb742065288df2ec63b0ee35f97a1f6950171cf2272f7e34b1fe3873b17b",
+            "policy_postprocessor_step_0_unnormalizer_processor.safetensors": "977b489c7640d95720e6922b713bfb5e60a1b22aabb4ed0b28e53c6406988d1e",
+            "policy_preprocessor.json": "2138030c59550f87eee769940b2b78962beb729d7ac451a9d287bd0389629c6a",
+            "policy_preprocessor_step_5_normalizer_processor.safetensors": "5aad0725a23873e4815160ff61b62cbf0c8be6a34827717449ad13e528ece508",
+            "train_config.json": "7814d6cb9affc545eab22c5680214046a4e0377c4ec8171f7cd3ae6ba387f207"
+          }
+        },
+        "code_sha256": {
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/scripts/evaluate.py": "94ffc9b2c2a3f75636c53e0afa9ba291bc024cd308b556b372bf3691e9573e7e",
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/src/cross_backend/evaluation.py": "e088ddb6d40ae1b7784585f804ff6b38f8ed970e68e6514579b8865fc2b4646d",
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/scripts/run_s1_policy_development.py": "20930d15d3978f25446d615e0e4ff4274165da1993fba31fed91aae98f98126a",
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/scripts/s1_policy_worker.py": "3fc0e3bd0f47b55b2f644b0c63963eda629c67b10b78b3f4c7a7abd7156bea97",
+          "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/src/cross_backend/tape_task.py": "7eee4e1ecd561bd151319e976fce86ac54dab62dbcc6b4b1750b3e75fbe87718"
+        },
+        "config_sha256": "ed6140c4c6905a0a508a00b18f0ca39e7fd0023e0693e6a9741f6ee47360f2d9",
+        "initials": [
+          {
+            "id": "C01",
+            "file_sha256": "736edc4dad5bb7aa0dbaf2364420c87763572b71d63e36b85a507d43dc2228d4",
+            "geometry_sha256": "b38c877b454f20c4912ffeac33bad06b72964ca90c33613122efc14ba76678b4",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C02",
+            "file_sha256": "a2abe64451866907625e202b21163800f09e86fb4636ef2a65f047b72e1eba06",
+            "geometry_sha256": "ff7bbbe5a5d6aafa5d6662f0f451ffe71ccb81b7759d3c49445173c0cc941b95",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C03",
+            "file_sha256": "b245c7412da382c597f9551a8d9f97b13847aa5cdf0dd23618cc8de101bf677d",
+            "geometry_sha256": "dc283565c3a4f5741eb39797fd68e73f39eac0d4ab0f474236cee73a31bad4a8",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C04",
+            "file_sha256": "e010aa81e479fe2a8af48dbfa224fe5f4cf791b5e38b8b3269296c73f5f183d6",
+            "geometry_sha256": "f48cdb064427d4e9529c4c7f903377523d36ae923a8f6254c43f0458c354474f",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C05",
+            "file_sha256": "a88250362668ee63cb864f7f9f425f669d1474d95d398426166c65c02ebce7fb",
+            "geometry_sha256": "95abc84424a1ada494fd1ffadcdf3c49b5d836a2e9427cb86e14c2df9e991f5d",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C06",
+            "file_sha256": "f1a3ce6f772bfe710e8e006533876e73dbed694aa74e9bc94c8e3a3538ed3c99",
+            "geometry_sha256": "a69cfe7dab25969e28e64f4208e6d801b271618d070d610107c5e97e071acf71",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C07",
+            "file_sha256": "887caa840b77d3d917493784b257d7b0f1255ca0b79a2d9602c29ebed13a9a8a",
+            "geometry_sha256": "3befe14e85dfcacdd938da8e5ce4feb8a2cf905dead38ca92a9990bd723c42e0",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C08",
+            "file_sha256": "f6cb6d8ee7dbf089e94e4f8084204778dfef740cd9625cc0486709a6fc4436ac",
+            "geometry_sha256": "49608a86c149c7f9c36757ce7c8232acb397eb2dc130a8b7a10eacd9a92411ef",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C09",
+            "file_sha256": "cd6a1f5feab82210c3c459d54536c9c97731baad577652e4b873cdad5a8767b0",
+            "geometry_sha256": "3d59259fa6f7222b8f48eb08967b4a3c2232e9af0b9675cc1c3efa087954b2a1",
+            "preflight_status": "running"
+          },
+          {
+            "id": "C10",
+            "file_sha256": "7ca1e91a617e78ac5fa63d3e8e4187ece7be926435dbe60c041d8fc97370b5b2",
+            "geometry_sha256": "3fa9262296b40bdbcaacc7f3d9c923f538d12d4d5765531e0a25c6c00bf008b0",
+            "preflight_status": "running"
+          }
+        ],
+        "calibration_sha256": "f911b3b1e57ed0d513d27eeb7bbd743086b09a03f9babd4900b3a734c0594434",
+        "scene_with_meshes_sha256": "8a453405302dd3edbe39563808cf2ff7a16225704d59e1d94c9eb3b5f220acdd",
+        "scope": "nominal simulation comparison; no verified physical alignment, no sim-to-real inference",
+        "scheduling": "measured host inference latency injected into simulation; compared deployment systems, not isolated model architecture",
+        "initial_selection": "5 x positions in [-0.19,-0.17] m, 2 y positions (-0.155,-0.145) m; zero joint start; same mat, no outcome-based changes",
+        "raw_evidence_retention": "retain all model input/output arrays, action events, schedules, summaries and videos",
+        "platform_change_reason": "CPU runtime/observation age gates; CPU outputs retained separately; identical models, initial cases and metrics",
+        "previous_protocol": {
+          "path": "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/artifacts/studies/model-comparison-20260928/mujoco-protocol.json",
+          "sha256": "251bdb856e30a751780602002c0c9a61e6b7478b2c5c1085d459e317729992d4"
+        }
+      }
+    }
+  },
+  "cpu_followup": {
+    "move_pot_act": "10/10 completed, all timeout",
+    "move_pot_smolvla": "10/10 recorded stops at observation-age gate; task outcomes unknown",
+    "aloha": "ACT 30 completed (14 successes); DOT CPU run interrupted for runtime; not combined with CUDA evidence"
+  },
+  "sim_real": {
+    "eligible_pairs": 0,
+    "scope": "prospective measured pairing not complete; alignment acquisition in progress",
+    "unpaired_act_reference": "artifacts/studies/sim-real-pairing-20260928/unpaired-real-reference.json"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "backend": "so101",
+  "policy": "ACT",
+  "task": "move pot",
+  "scope": "three_formal_full_cycle_hardware_trials",
+  "formal_trials": 3,
+  "task_successes": 0,
+  "verified_returns": 3,
+  "trial_results": [
+    {
+      "trial_number": 1,
+      "task_success": false,
+      "return_to_start_verified": true,
+      "policy_goal_packets": 533,
+      "return_goal_packets": 159,
+      "max_abs_return_error_ticks": 6,
+      "shared_boundary_audit": "passed",
+      "summary_sha256": "c51ad26f8f51797cf16d5b3a5b28358b2e624a5bbd0be37d93716aa118ccad9d",
+      "hardware_events_sha256": "42aa686e9d1668c21deb06cbc355d6219b5ad92de80e7c9111afe4a40085df71"
+    },
+    {
+      "trial_number": 2,
+      "task_success": false,
+      "return_to_start_verified": true,
+      "policy_goal_packets": 532,
+      "return_goal_packets": 163,
+      "max_abs_return_error_ticks": 6,
+      "shared_boundary_audit": "passed",
+      "summary_sha256": "3d6c134256160385c056453c7af45680e62a21900faa163e3897aee51bc85f52",
+      "hardware_events_sha256": "862d6cfaf042380d4bbb7f3979e223aa50eef1543d23118e17ee99f68e8558ba"
+    },
+    {
+      "trial_number": 3,
+      "task_success": false,
+      "return_to_start_verified": true,
+      "policy_goal_packets": 534,
+      "return_goal_packets": 197,
+      "max_abs_return_error_ticks": 7,
+      "shared_boundary_audit": "passed",
+      "summary_sha256": "e2313de42ad5f76ff52be355f8fafd7a73a51390fd3f45a686d2e3f2c9588784",
+      "hardware_events_sha256": "4b3a1d71af32e90c1f055e82b93eaf9198429da782963e238c6ffa13e9f254fd"
+    }
+  ],
+  "limits": "Artifacts are local and ignored by Git; this compact record cannot independently replay raw video or motor packets."
+}

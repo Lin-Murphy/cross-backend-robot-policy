@@ -26,6 +26,8 @@ from cross_backend.so101_lerobot_backend_adapter import SO101LeRobotBackendAdapt
 from capture_move_pot_readonly import CAL,CAL_SHA
 SMOL_PROFILE=ROOT/'configs/so101-smolvla-bidirectional-followwait18-proposal-20260927.json'
 ACT_PROFILE=ROOT/'configs/so101-act-shared18-proposal-20260927.json'
+ACT_FULL_CYCLE_PROFILE=ROOT/'configs/so101-act-full-cycle-reset-20260928.json'
+ACT_PREOPEN_PROFILE=ROOT/'configs/so101-act-full-cycle-preopen-20260928.json'
 PROFILE=SMOL_PROFILE
 
 
@@ -153,6 +155,32 @@ def install_first_policy_sample_resampler(engine,robot,guard,record,max_samples)
 
 def load_profile():
     profile=json.loads(PROFILE.read_text())
+    full_cycle=profile.get('trial_kind')=='act_full_cycle_formal_attempt'
+    if full_cycle:
+        expected_model=ROOT/'artifacts/r1-act-formal-40000-run02/train/checkpoints/040000/pretrained_model'
+        calibration=json.loads(CAL.read_text())
+        lower=[calibration[n]['range_min'] for n in NAMES]
+        upper=[calibration[n]['range_max'] for n in NAMES];upper[3]=3265
+        if (profile.get('policy_type')!='act' or Path(profile['model_path']).resolve()!=expected_model.resolve()
+            or profile['fps']!=30 or profile['max_episode_seconds']!=18 or profile['max_goal_packets']!=540
+            or profile['raw_lower']!=lower or profile['raw_upper']!=upper
+            or profile['max_feedback_raw']!=[calibration[n]['range_max'] for n in NAMES]
+            or profile['max_from_feedback']!=[4095]*6 or profile['max_from_last_target']!=[4095]*6
+            or profile['max_measured_rate_ticks_s']!=[1000000]*6
+            or profile['max_gripper_follow_wait_ns']!=0 or profile['max_gripper_cancel_to_feedback_ticks']!=0
+            or profile['max_first_action_samples']!=1 or profile['return_max_seconds']!=15
+            or profile['return_nominal_ticks_s']!=180 or profile['return_tolerance_ticks']!=20
+            or profile['auto_execute'] is not False or profile['calibration_sha256']!=CAL_SHA
+            or digest(CAL)!=CAL_SHA):
+            raise ValueError('unexpected ACT full-cycle profile')
+        if profile.get('preopen_gripper_raw') is not None and (
+            profile['preopen_gripper_raw']!=2309 or
+            profile.get('preopen_nominal_ticks_s')!=120 or
+            profile.get('preopen_tolerance_ticks')!=20):
+            raise ValueError('unexpected ACT gripper preopen')
+        keys=LegacyTrialProfile.__dataclass_fields__
+        return profile,LegacyTrialProfile(**{k:tuple(profile[k]) if isinstance(profile[k],list) else profile[k]
+            for k in keys}).validate()
     if profile['trial_kind']!='single_development_rollout_not_formal' or profile['fps']!=30 or \
        profile['max_episode_seconds']!=18 or profile['max_goal_packets']!=540 or \
        profile['max_gripper_follow_wait_ns']!=300_000_000 or \
@@ -164,14 +192,87 @@ def load_profile():
         expected_model=ROOT/'artifacts/r1-act-formal-40000-run02/train/checkpoints/040000/pretrained_model'
         if Path(profile['model_path']).resolve()!=expected_model.resolve() or \
            profile['raw_upper'][3]!=3265 or profile['max_feedback_raw'][3]!=3189 or \
-           profile['max_from_feedback']!=[100,160,200,110,45,160] or \
-           profile['max_from_last_target']!=[4095]*6 or profile.get('target_step_gate_enabled') is not False or \
+           profile['max_from_feedback']!=[100,160,200,130,60,160] or \
+           profile['raw_lower'][4]!=1750 or profile['max_from_last_target']!=[4095]*6 or profile.get('target_step_gate_enabled') is not False or \
            profile['max_measured_rate_ticks_s']!=[1000,2200,3000,1600,800,3000]:
             raise ValueError('unexpected ACT single-trial profile')
     keys=LegacyTrialProfile.__dataclass_fields__
     guard=LegacyTrialProfile(**{k:tuple(profile[k]) if isinstance(profile[k],list) else profile[k]
                                 for k in keys}).validate()
     return profile,guard
+
+
+def return_to_captured_start(bus,direct_sync,start_raw,profile,record,clock=time.perf_counter_ns,sleep=time.sleep):
+    """Separate audited, paced raw return after a normally completed policy episode."""
+    current=bus.sync_read('Present_Position',normalize=False,num_retry=0)
+    target={n:int(start_raw[n]) for n in NAMES}
+    delta=max(abs(target[n]-int(current[n])) for n in NAMES)
+    seconds=max(4.0,delta/profile['return_nominal_ticks_s'])
+    if seconds>profile['return_max_seconds']:
+        raise RuntimeError('return_duration_exceeds_declared_limit')
+    steps=max(1,math.ceil(seconds*30))
+    record({'event':'formal_return_start','from_raw':current,'to_raw':target,
+            'duration_seconds':seconds,'steps':steps,'host_ns':clock()})
+    started=clock()
+    last_send_ns=None
+    for step in range(1,steps+1):
+        deadline=started+round(step*seconds*1e9/steps)
+        if last_send_ns is not None:deadline=max(deadline,last_send_ns+20_000_000)
+        remaining=(deadline-clock())/1e9
+        if remaining>0:sleep(remaining)
+        values={bus.motors[n].id:round(int(current[n])+(target[n]-int(current[n]))*step/steps)
+                for n in NAMES}
+        for n in NAMES:
+            motor=bus.motors[n].id
+            if not profile['raw_lower'][motor-1]<=values[motor]<=profile['raw_upper'][motor-1]:
+                raise RuntimeError('return_target_outside_calibration:'+n)
+        result=direct_sync(42,2,values,num_retry=0)
+        last_send_ns=clock()
+        record({'event':'formal_return_goal_transport_return','step':step,'steps':steps,
+                'raw_ids_values':values,'return_value':result,'host_ns':last_send_ns,
+                'per_motor_acknowledged':False})
+    sleep(1.0)
+    final=bus.sync_read('Present_Position',normalize=False,num_retry=0)
+    reached=all(abs(int(final[n])-target[n])<=profile['return_tolerance_ticks'] for n in NAMES)
+    hold={bus.motors[n].id:int(final[n]) for n in NAMES}
+    result=direct_sync(42,2,hold,num_retry=0)
+    record({'event':'formal_return_final_hold_transport_return','raw_ids_values':hold,
+            'return_value':result,'host_ns':clock(),'per_motor_acknowledged':False})
+    record({'event':'formal_return_end','final_raw':final,'target_raw':target,
+            'within_tolerance':reached,'host_ns':clock()})
+    if not reached:raise RuntimeError('return_position_not_reached')
+    return final
+
+
+def preopen_gripper(bus,direct_sync,start_raw,profile,record,clock=time.perf_counter_ns,sleep=time.sleep):
+    """Audited gripper-only opening before ACT; the final return still targets start_raw."""
+    target=profile['preopen_gripper_raw']
+    initial=int(start_raw['gripper'])
+    if not 1877<=initial<target<=3209:raise RuntimeError('unexpected_gripper_preopen_range')
+    seconds=max(2.5,(target-initial)/profile['preopen_nominal_ticks_s'])
+    steps=math.ceil(seconds*30)
+    record({'event':'formal_gripper_preopen_start','from_raw':dict(start_raw),
+            'target_gripper_raw':target,'duration_seconds':seconds,'steps':steps,'host_ns':clock()})
+    started=clock();last_send_ns=None
+    for step in range(1,steps+1):
+        deadline=started+round(step*seconds*1e9/steps)
+        if last_send_ns is not None:deadline=max(deadline,last_send_ns+20_000_000)
+        remaining=(deadline-clock())/1e9
+        if remaining>0:sleep(remaining)
+        values={bus.motors[n].id:int(start_raw[n]) for n in NAMES}
+        values[bus.motors['gripper'].id]=round(initial+(target-initial)*step/steps)
+        result=direct_sync(42,2,values,num_retry=0)
+        last_send_ns=clock()
+        record({'event':'formal_gripper_preopen_goal_transport_return',
+                'step':step,'steps':steps,'raw_ids_values':values,
+                'return_value':result,'host_ns':last_send_ns,'per_motor_acknowledged':False})
+    sleep(0.5)
+    feedback=bus.sync_read('Present_Position',normalize=False,num_retry=0)
+    reached=abs(int(feedback['gripper'])-target)<=profile['preopen_tolerance_ticks']
+    record({'event':'formal_gripper_preopen_end','feedback_raw':feedback,
+            'within_tolerance':reached,'host_ns':clock()})
+    if not reached:raise RuntimeError('gripper_preopen_not_reached')
+    return feedback
 
 
 def rollout_arguments(profile,out):
@@ -239,12 +340,14 @@ def execute(cfg,profile,limits,out,shared_boundary=False):
     from threading import Event
     validate_rollout_config(cfg,profile,out)
     init_logging()
-    summary={'status':'failed','scope':'single_legacy30_development_pilot_not_formal',
+    full_cycle=profile.get('trial_kind')=='act_full_cycle_formal_attempt'
+    summary={'status':'failed','scope':('formal_full_cycle_attempt' if full_cycle else 'single_legacy30_development_pilot_not_formal'),
              'backend':'so101','policy':profile.get('policy_type','smolvla'),'task':'move pot','task_outcome':None,
              'formal_trial_count':0,'profile_sha256':digest(PROFILE),'calibration_sha256':CAL_SHA,
              'model_path':profile['model_path'],'source_exposure_timestamps_verified':False,
              'raw_goal_packets_transmitted':0,'per_motor_goal_acknowledgements_verified':False,
              'shared_boundary_enabled':shared_boundary}
+    if full_cycle:summary['return_to_start_verified']=False
     stream=(out/'hardware-events.jsonl').open('x',buffering=1)
     def record(event):stream.write(json.dumps(event,allow_nan=False,default=str)+'\n')
     guard=LegacySyncGuard(limits,record,max_gripper_follow_wait_ns=profile['max_gripper_follow_wait_ns'],
@@ -307,6 +410,14 @@ def execute(cfg,profile,limits,out,shared_boundary=False):
         if any(torque[n]!=1 for n in NAMES):raise RuntimeError('torque_not_all_enabled')
         if any(abs(goal[n]-position[n])>20 for n in NAMES):raise RuntimeError('stale_goal_gap')
         if not scene_checked[0]:raise RuntimeError('scene_check_missing')
+        if full_cycle:
+            summary['start_raw']=dict(position)
+            summary['return_to_start_requested']=True
+            record({'event':'formal_full_cycle_start_pose','raw':position,'host_ns':time.perf_counter_ns()})
+            if profile.get('preopen_gripper_raw') is not None:
+                summary['preopen_feedback_raw']=preopen_gripper(
+                    robot.bus,original_sync[0],summary['start_raw'],profile,record)
+                summary['gripper_preopen_verified']=True
         if shared_boundary:
             def shared_stop():
                 hold_current(robot)
@@ -326,12 +437,19 @@ def execute(cfg,profile,limits,out,shared_boundary=False):
                 record({'event':'legacy_immediate_hold_error','error':repr(exc),'host_ns':time.perf_counter_ns()})
         install_hold_before_finalize(strategy,immediate_hold,record)
         strategy.setup(ctx);strategy.run(ctx)
+        if full_cycle:
+            if guard.goal_packets<1:raise RuntimeError('formal_attempt_no_policy_goals')
+            summary['formal_trial_count']=1
+            summary['return_final_raw']=return_to_captured_start(
+                robot.bus,original_sync[0],summary['start_raw'],profile,record)
+            summary['return_to_start_verified']=True
         summary['status']='ended_unreviewed'
     except LegacyGuardRejected as exc:
         summary['status']='gate_rejected';summary['rejection_reasons']=list(exc.reasons)
     except BaseException as exc:
         summary['status']='aborted';summary['failure']=repr(exc);summary['traceback']=traceback.format_exc()
     finally:
+        if full_cycle and guard.goal_packets>0:summary['formal_trial_count']=1
         robot=robot_holder[0]
         if robot is not None and robot.bus.is_connected:
             try:hold_current(robot)
@@ -366,8 +484,13 @@ if __name__=='__main__':
     mode.add_argument('--execute-approved-once',action='store_true')
     p.add_argument('--shared-boundary',action='store_true',help='new audited common observation/action hook; requires separate real-motion approval')
     p.add_argument('--policy',choices=('smolvla','act'),default='smolvla')
+    p.add_argument('--full-cycle',action='store_true',help='ACT formal full-cycle profile; needs specific motion approval')
+    p.add_argument('--preopen-gripper',action='store_true',help='ACT full-cycle trial with an audited gripper-only opening')
     args=p.parse_args();args.output.mkdir(parents=True,exist_ok=False)
-    PROFILE=ACT_PROFILE if args.policy=='act' else SMOL_PROFILE
+    if args.full_cycle and (args.policy!='act' or not args.shared_boundary):
+        p.error('full-cycle requires ACT and the shared boundary')
+    if args.preopen_gripper and not args.full_cycle:p.error('preopen requires full-cycle')
+    PROFILE=ACT_PREOPEN_PROFILE if args.preopen_gripper else ACT_FULL_CYCLE_PROFILE if args.full_cycle else ACT_PROFILE if args.policy=='act' else SMOL_PROFILE
     if args.policy=='act' and args.execute_approved_once and not args.shared_boundary:
         p.error('ACT real rollout requires the shared boundary')
     profile,limits=load_profile()

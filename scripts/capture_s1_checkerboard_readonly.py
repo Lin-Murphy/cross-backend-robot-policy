@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import stat
 import time
+import math
 
 import cv2
 import numpy as np
@@ -36,7 +37,13 @@ def main():
     parser.add_argument('--height',type=int,default=480)
     parser.add_argument('--columns',type=int,default=9)
     parser.add_argument('--rows',type=int,default=6)
+    parser.add_argument('--automatic',action='store_true',help='Sample while the operator moves the board; no robot access')
+    parser.add_argument('--duration-seconds',type=float,default=60)
+    parser.add_argument('--interval-seconds',type=float,default=1)
     args=parser.parse_args()
+    if not math.isfinite(args.duration_seconds) or not 1<=args.duration_seconds<=300 or not math.isfinite(args.interval_seconds) or not .2<=args.interval_seconds<=10:
+        parser.error('invalid automatic capture duration or interval')
+    if args.automatic and args.offline_image:parser.error('--automatic requires a camera device')
     if not 1<=args.min_views<=args.views<=40 or min(args.width,args.height)<100 or min(args.columns,args.rows)<3:
         parser.error('invalid image, pattern or view count')
     resolved_device=None
@@ -59,15 +66,22 @@ def main():
             cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc(*'MJPG'))
             cap.set(cv2.CAP_PROP_FRAME_WIDTH,args.width)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT,args.height)
+        capture_start=time.monotonic();next_capture=capture_start
         while len(accepted_corners)<args.views:
+            if args.automatic and time.monotonic()-capture_start>=args.duration_seconds:break
             if args.offline_image:
                 bgr=source_image.copy();stamp=time.monotonic_ns()
             else:
-                try:
-                    answer=input(f'{args.camera}: move board to a new pose, Enter=capture, q=finish: ').strip().lower()
-                except EOFError:
-                    break
-                if answer=='q':break
+                if args.automatic:
+                    remaining=next_capture-time.monotonic()
+                    if remaining>0:time.sleep(remaining)
+                    next_capture=time.monotonic()+args.interval_seconds
+                else:
+                    try:
+                        answer=input(f'{args.camera}: move board to a new pose, Enter=capture, q=finish: ').strip().lower()
+                    except EOFError:
+                        break
+                    if answer=='q':break
                 ok=False;bgr=None
                 for _ in range(5):ok,bgr=cap.read()
                 stamp=time.monotonic_ns()
@@ -109,7 +123,7 @@ def main():
         result={'status':status,'camera':args.camera,'device':args.device,'resolved_device':resolved_device,'offline_image':str(args.offline_image) if args.offline_image else None,
                 'accepted_views':len(accepted_corners),'min_views':args.min_views,'attempts':len(records),
                 'pattern_inner_corners':[args.columns,args.rows],'opencv_version':cv2.__version__,
-                'camera_read_only':True,'motor_or_serial_access':False,'calibration_accepted':False,'records':records}
+                'automatic':args.automatic,'duration_limit_seconds':args.duration_seconds,'camera_read_only':True,'motor_or_serial_access':False,'calibration_accepted':False,'records':records}
         (args.output/'capture.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
         print(json.dumps({'status':status,'accepted_views':len(accepted_corners),'output':str(args.output.resolve())},ensure_ascii=False))
     return 0 if status=='candidate_capture_complete' else 2

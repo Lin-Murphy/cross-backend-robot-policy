@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "backend": "mujoco",
+  "task": "move_pot",
+  "policies": [
+    {"name": "act", "checkpoint": "../models/move-pot/act"},
+    {"name": "smolvla", "checkpoint": "../models/move-pot/smolvla"}
+  ],
+  "episodes": 1,
+  "first_seed": 1000,
+  "device": "cpu",
+  "scene": "../assets/so101/tape-base-offset.xml",
+  "calibration": "../artifacts/r3-real-clock-timing-20260924/calibration-recovery/current-calibration.json"
+}

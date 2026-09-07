@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "backend": "aloha",
+  "task": "transfer_cube",
+  "policies": [
+    {"name": "act", "checkpoint": "../models/aloha-3d/LeTau__act_aloha_transfer_cube"},
+    {"name": "dot", "checkpoint": "../models/aloha-3d/IliaLarchenko__dot_transfer_cube"}
+  ],
+  "episodes": 2,
+  "first_seed": 1000,
+  "device": "cpu"
+}

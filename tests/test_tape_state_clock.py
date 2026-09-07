@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 import numpy as np
 from cross_backend.tape_sim_backend import TapeSimBackend
-SCENE=Path(__file__).resolve().parents[1]/'artifacts/s1-base-spacing-20260925/scene.xml'
+SCENE=Path(__file__).resolve().parents[1]/'assets/so101/tape-base-offset.xml'
 class StateClockTests(unittest.TestCase):
     def setUp(self):self.b=TapeSimBackend(SCENE,1/30);self.b.reset()
     def tearDown(self):self.b.close()

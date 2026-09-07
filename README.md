@@ -1,24 +1,60 @@
 # Cross-Backend Robot Policy Deployment and Evaluation
 
-用于研究策略、任务评价与记录如何跨机器人后端复用。当前实现包含 MuJoCo 仿真和 SO101 真机适配实例；ACT、DOT、SmolVLA 与 ALOHA 是验证用的策略或任务，不代表任意组合都已支持。
+Reusable interfaces for **running robot policies, evaluating tasks, and comparing results across execution backends**. Current integrations cover SO101 and MuJoCo, with a separate ALOHA ACT/DOT comparison.
 
-## 已验证到哪里
+## Policy demo
 
-- SO101/MuJoCo 共用观测、动作请求、执行回执和任务阶段记录接口。SO101/SmolVLA 有一次经现场确认的胶带放置成功开发回合，共 494 个六关节目标；这不是成功率估计，也不是同策略、同初态的真仿性能比较。
-- SO101/ACT 三次真机开发回合各发送 50 个目标，验证第二策略可进入相同的发送、拒绝和记录路径；任务结果未知。
-- 独立的 ALOHA TransferCube 任务中，ACT 与 DOT 在配对的 30 个初态上分别成功 11/30、26/30。两者仍使用不同评测入口，之后按统一判据汇总。
-- MuJoCo 方块示例的固定轨迹在 799 步完成任务；固定轨迹不是学习策略。
+![ACT and DOT on two paired ALOHA initial states](docs/media/aloha-comparison.gif)
 
-结论、证据范围和未完成条件见[结果与边界](docs/RESULTS.md)。接口划分见[架构](docs/ARCHITECTURE.md)。Git 中仅保留源码、测试、必要配置与可运行的仿真场景/网格。原始视频、相机画面、试跑日志和训练中间状态已按用户要求清理；Git 只保留[精简结果记录](evidence/v1-results.json)，不能独立重验历史真机媒体。模型权重保留在本机且不进入 Git。
+[Watch the full-resolution video](docs/media/aloha-comparison.mp4). These are fresh learned-policy rollouts recorded on 2026-09-28, not fixed trajectories. Seed 1000: DOT completes the transfer and ACT does not. Seed 1001: ACT completes it and DOT does not. Both receive the same initial seed per pair; success means episode maximum reward >= 4. Shorter clips hold their last frame for synchronized playback.
 
-## 无机器人仿真自检
+The two examples illustrate behavior, not a success-rate estimate. [Demo scores and provenance](evidence/demo-results.json) are separate from the earlier 30-seed study.
 
-需要 Linux、Python 3.12、MuJoCo 3.3.7、NumPy 2.5.3、FFmpeg 和可用的 EGL 渲染环境。准备本地 Python 环境后运行：
+## Architecture
 
-```bash
-bash scripts/run_sim_cube_v1.sh
+```mermaid
+flowchart LR
+  policies["Different policy models"] --> execution["Shared execution workflow<br/>Policy adaptation · Action conversion · Scheduling checks"]
+  execution --> backend["Execution backend"]
+  backend --> records["Task evaluation and recording<br/>Outcomes · Failure reasons · Trajectories and timing"]
+  records --> comparison["Model comparison"]
 ```
 
-默认使用 `.venv-sim/bin/python`；可用 `SIM_V1_PYTHON` 指定其他已安装依赖的解释器。该命令只执行仿真固定轨迹，结果写入被 Git 忽略的 `artifacts/sim-cube-v1-demo-*`。依赖列表见[requirements-sim-v1.txt](requirements-sim-v1.txt)。已有本地模型权重和相应环境时，可用 `bash scripts/run_aloha_3d_comparison.sh` 跑 ALOHA 对比；权重不随 Git 分发。真机入口需要单独的现场方案与确认，不能把历史开发参数直接当作新设备安全参数。
+Observations feed back from the backend to the policy. Task configuration defines initial conditions and completion rules. The SO101/MuJoCo implementations share observation, action, receipt, and result contracts. A unified evaluation entry point now selects policies, launches the native runners, and records common results. ALOHA retains its two model-specific evaluators underneath this entry point.
 
-原创代码和文档采用 [MIT](LICENSE)；随附 SO101 网格及 DOT 兼容代码保留各自许可证，见[第三方说明](THIRD_PARTY_NOTICES.md)。
+## Results and current scope
+
+| Evaluation | Recorded result | What it establishes |
+| --- | --- | --- |
+| ALOHA ACT / DOT, 30 paired seeds | **11/30 / 26/30** successful transfers | Comparison of two concrete deployment systems on seeds 1000–1029; evaluator versions and preprocessing differ |
+| SO101 / SmolVLA | **One confirmed placement**, 494 audited action/dispatch pairs | A successful development run through the shared execution boundary; no success-rate estimate |
+| SO101 / ACT | [**0/3 task successes**](evidence/so101-act-full-cycle-results.json) in three completed 18-second hardware trials; all three returned to their recorded start poses | 533 / 532 / 534 audited policy packets; shared execution works, but reliable tape placement is not established |
+
+The SmolVLA placement did not complete a return-to-start cycle. The three SO101/ACT hardware trials did; the tape remained outside the mat after each trial. They are formal full-cycle attempts, not a paired-initial-state model comparison. Existing SO101 and MuJoCo runs are not a same-policy, paired-initial-state performance study. Formal SO101 model comparison and simulation-to-hardware validation remain open.
+
+Fresh unified-entry comparisons on 2026-09-28 completed **30 ALOHA pairs (ACT 14/30, DOT 27/30)** and **10 nominal MuJoCo pairs (ACT 0/10, SmolVLA 0/10; all task timeouts with completed execution)**. [Study results and evidence](docs/STUDY_RESULTS.md) distinguish these from the historical runs. Measured simulation/hardware pairing is in calibration; task failure remains valid evidence.
+
+[Historical result data](evidence/results.json) retains per-seed scores and hardware audit summaries. Its old raw videos and packet logs were removed during earlier cleanup, so those hardware findings cannot be independently replayed from this repository. The new demo above has separately retained media. SO101, ALOHA, ACT, DOT, and SmolVLA are validated examples with different levels of support, not arbitrary interchangeable combinations.
+
+## Run and develop
+
+With the local ACT/DOT checkpoints and compatible LeRobot/ALOHA environments prepared:
+
+```bash
+python3 scripts/evaluate.py --config configs/eval-aloha.json \
+  --python /path/to/lerobot/.venv/bin/python --output artifacts/aloha-new
+```
+
+The example configuration runs two episodes per model; edit `episodes` and `first_seed` for a larger evaluation. [Unified evaluation guide](docs/EVALUATION.md) covers ALOHA, MuJoCo and SO101 configurations, dry runs, and the shared result format. Task failure is recorded separately from execution failure. The command runs simulation only and uses offline model loading. Checkpoints are not distributed here. [Setup, test commands, and script guide](docs/ARCHITECTURE.md#running-and-testing) describe the required environments and supported entry points.
+
+Fixed-trajectory demos, obsolete training workflows, one-off diagnostics, and duplicate release builders have been removed. MuJoCo backend tests retain scene, state-restoration, and task-observer coverage. New physical motion requires an explicitly approved on-site plan; historical profiles are not settings for an arbitrary robot.
+
+## Project layout
+
+- `src/cross_backend/`: policy adapters, shared execution, backend implementations, task evaluation, and recording.
+- `scripts/`: retained model runners, calibration/capture tools, and result analysis.
+- `tests/`, `configs/`, `assets/`: tests, current reference profiles, and SO101 simulation scenes/meshes.
+- `evidence/`, `docs/media/`: compact results and the README policy demo.
+- `artifacts/`, `models/`: ignored local run outputs and inference resources.
+
+See [architecture and script responsibilities](docs/ARCHITECTURE.md). Original code uses [MIT](LICENSE); upstream meshes and DOT compatibility code retain their licenses in [third-party notices](THIRD_PARTY_NOTICES.md).

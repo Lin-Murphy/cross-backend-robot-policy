@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "purpose": "Two illustrative learned-policy rollouts for README; not a new 30-seed performance study",
+  "recorded_date": "2026-09-28",
+  "task": "gym_aloha/AlohaTransferCube-v0",
+  "criterion": "episode maximum reward >= 4",
+  "episode_length": 400,
+  "rows": [
+    {
+      "seed": 1000,
+      "act_max_reward": 0.0,
+      "act_success_reward4": false,
+      "act_native_success": false,
+      "dot_max_reward": 4.0,
+      "dot_success_reward4": true,
+      "dot_native_success": false
+    },
+    {
+      "seed": 1001,
+      "act_max_reward": 4.0,
+      "act_success_reward4": true,
+      "act_native_success": true,
+      "dot_max_reward": 2.0,
+      "dot_success_reward4": false,
+      "dot_native_success": false
+    }
+  ],
+  "checkpoints": {
+    "ACT": {
+      "model_id": "LeTau/act_aloha_transfer_cube",
+      "model_sha256": "a190eb3f47c8daa51395893af49f9df55977d777575789c1599deea6115551fa"
+    },
+    "DOT": {
+      "model_id": "IliaLarchenko/dot_transfer_cube",
+      "model_sha256": "e9212b744bed2cfe02b1b116c01043432c35e0be161157054b2583459beb6414"
+    }
+  },
+  "initial_frame_checks": [
+    {
+      "seed": 1000,
+      "initial_frame_mean_absolute_pixel_difference": 0.33411024305555553
+    },
+    {
+      "seed": 1001,
+      "initial_frame_mean_absolute_pixel_difference": 0.33205078125
+    }
+  ],
+  "source_run": "artifacts/readme-policy-demo-20260928",
+  "source_files": {
+    "artifacts/readme-policy-demo-20260928/act/eval_info.json": "20b2d0c95a918c86f49ca4c504cd9f1364e5a9572020d39955502cdee9940a99",
+    "artifacts/readme-policy-demo-20260928/act/videos/aloha_0/eval_episode_0.mp4": "2ad4154c0d368b183de46d4ca3e079e650a46c047755415b9558155f23e53256",
+    "artifacts/readme-policy-demo-20260928/act/videos/aloha_0/eval_episode_1.mp4": "96d844737e12c1255841afd4d2c007254ad6171927f256984cb8400fc748630b",
+    "artifacts/readme-policy-demo-20260928/act.log": "6c0491a9109f1d5aa7950420e87eb9c1c7c2e9354979b58a330c3ec2c86989c4",
+    "artifacts/readme-policy-demo-20260928/comparison.json": "5eeababf5ba9fd5551cbb3259863cd7bfb6ad0531efb534ce110f60defd04bdd",
+    "artifacts/readme-policy-demo-20260928/dot/eval_info.json": "9e1b51377c3943fd2664f60b77a5218525142d2e8cd244a0ba783dbbaf7c8eac",
+    "artifacts/readme-policy-demo-20260928/dot/videos/eval_episode_0.mp4": "89501f6df9359ae49398209e830fdb7e558b90c6dd59c5174629940cdb0641d4",
+    "artifacts/readme-policy-demo-20260928/dot/videos/eval_episode_1.mp4": "0353dfdcc451523cac57e6df29fac731152de2bfaad8444649627c6f6c4995d9",
+    "artifacts/readme-policy-demo-20260928/dot.log": "0c0b616680925ba9e7470f39c57ec095c859c4f8224fee6d2dbfea1ff25c9c24"
+  },
+  "generation_scripts": {
+    "scripts/run_aloha_3d_comparison.sh": "01aebc63035516b5bd1455e39db872f654c6f68c5c8e72b9cb3b51128c84d0c6",
+    "scripts/compare_aloha_3d_eval.py": "0ccc59836124f8df8524c442c57e48e7c0f3cda5427e8bf28f1121f78e1bac7b",
+    "scripts/make_aloha_side_by_side.py": "efe314136a43955bb550be3f330d76cce0511a8301e3289dec81ec0b22aba986"
+  },
+  "published_media": {
+    "docs/media/aloha-comparison.gif": {
+      "sha256": "0cbe976b6264e7c1b43252a7eb789bc07cded1309e1616527d8368db30ea6a6c",
+      "bytes": 2852143
+    },
+    "docs/media/aloha-comparison.mp4": {
+      "sha256": "6d773a965769167657c13a27ec3c0e4d22c8f5d3296aaf6706330d08af4fe460",
+      "bytes": 536875
+    }
+  },
+  "presentation": "Seed 1000 followed by seed 1001. Shorter sides hold their final frame. GIF is resized to 800 px at 10 fps. Scoring uses raw evaluator outputs, not edited media.",
+  "hardware_access": false,
+  "fixed_trajectory": false
+}

@@ -1,6 +1,6 @@
 {
-  "trial_kind": "single_development_rollout_not_formal",
-  "source": "ACT resume 2026-09-28: current exact offline first target wrist roll 1797; lower target bound 1800 to 1750 within calibration; previous attempt03 wrist flex feedback gap 114, raise 110 to 130; wrist roll feedback gap 45 to 60; previous-goal step gate remains disabled; single fresh approval required",
+  "trial_kind": "act_full_cycle_formal_attempt",
+  "source": "2026-09-28 reset scene; single ACT formal full-cycle attempt, calibration envelope and no target/feedback tracking or previous-target/rate gates; audited controlled return to captured start",
   "model_path": "/home/murphy/Documents/Codex/cross-backend-lerobot-policy/artifacts/r1-act-formal-40000-run02/train/checkpoints/040000/pretrained_model",
   "calibration_sha256": "f911b3b1e57ed0d513d27eeb7bbd743086b09a03f9babd4900b3a734c0594434",
   "port": "/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B016049-if00",
@@ -12,28 +12,28 @@
   "max_episode_seconds": 18,
   "max_goal_packets": 540,
   "raw_lower": [
-    1800,
-    1000,
-    1100,
-    2500,
-    1750,
+    1227,
+    806,
+    991,
+    1772,
+    0,
     1877
   ],
   "raw_upper": [
-    2460,
-    2520,
-    2710,
+    2883,
+    2810,
+    3007,
     3265,
-    2120,
-    2440
+    4095,
+    3209
   ],
   "max_from_feedback": [
-    100,
-    160,
-    200,
-    130,
-    60,
-    160
+    4095,
+    4095,
+    4095,
+    4095,
+    4095,
+    4095
   ],
   "max_from_last_target": [
     4095,
@@ -44,12 +44,12 @@
     4095
   ],
   "max_measured_rate_ticks_s": [
-    1000,
-    2200,
-    3000,
-    1600,
-    800,
-    3000
+    1000000,
+    1000000,
+    1000000,
+    1000000,
+    1000000,
+    1000000
   ],
   "expected_goal_velocity_raw": [
     1200,
@@ -76,16 +76,19 @@
   "push_to_hub": false,
   "auto_execute": false,
   "max_feedback_raw": [
-    2460,
-    2520,
-    2710,
+    2883,
+    2810,
+    3007,
     3189,
-    2120,
-    2440
+    4095,
+    3209
   ],
-  "max_gripper_follow_wait_ns": 300000000,
-  "max_gripper_cancel_to_feedback_ticks": 60,
+  "max_gripper_follow_wait_ns": 0,
+  "max_gripper_cancel_to_feedback_ticks": 0,
   "max_first_action_samples": 1,
   "policy_type": "act",
-  "target_step_gate_enabled": false
+  "target_step_gate_enabled": false,
+  "return_max_seconds": 15,
+  "return_nominal_ticks_s": 180,
+  "return_tolerance_ticks": 20
 }

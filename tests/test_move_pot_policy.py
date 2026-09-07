@@ -8,7 +8,6 @@ import numpy as np
 
 from cross_backend.move_pot_policy import (MovePotObservation, MovePotChunk, ReplayChunkQueue,
                                            CAMERAS, JOINTS)
-from scripts.accept_move_pot_act import readiness
 
 
 class ContractTests(unittest.TestCase):
@@ -58,20 +57,6 @@ class ContractTests(unittest.TestCase):
             with self.assertRaises(ValueError):q.pop()
             q.reset();self.assertFalse(q.pending);q.close()
 
-    def test_incomplete_or_wrong_step_is_not_ready(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root=Path(tmp)
-            self.assertFalse(readiness(root,40000)['ready'])
-            (root/'process-result.json').write_text('{"exit_code":0}')
-            cp=root/'train/checkpoints/040000';(cp/'training_state').mkdir(parents=True)
-            (cp/'pretrained_model').mkdir()
-            (cp/'pretrained_model/model.safetensors').write_bytes(b'placeholder')
-            (cp/'training_state/training_step.json').write_text('{"step":20000}')
-            self.assertFalse(readiness(root,40000)['ready'])
-            (cp/'training_state/training_step.json').write_text('{"step":40000}')
-            self.assertTrue(readiness(root,40000)['ready']) # only readiness, never weight validation
-            (root/'process-result.json').write_text('{"exit_code":124}')
-            self.assertFalse(readiness(root,40000)['ready'])
 
 
 if __name__=='__main__':unittest.main()

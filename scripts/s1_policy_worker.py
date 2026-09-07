@@ -2,7 +2,7 @@
 import os
 for key in ('HF_HUB_OFFLINE','HF_DATASETS_OFFLINE','TRANSFORMERS_OFFLINE'):os.environ[key]='1'
 os.environ['WANDB_MODE']='disabled'
-import sys,json,socket,contextlib
+import sys,json,socket,contextlib,argparse
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 import numpy as np
@@ -15,10 +15,17 @@ def offline(sock,address):
     if sock.family in (socket.AF_INET,socket.AF_INET6):raise RuntimeError('Network blocked')
     return original(sock,address)
 socket.socket.connect=offline;torch.set_num_threads(2)
-name=sys.argv[1];out=Path(sys.argv[2]);trial_id=sys.argv[3]
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('name',choices=('act','smolvla'));parser.add_argument('output',type=Path);parser.add_argument('trial_id')
+parser.add_argument('--checkpoint',type=Path);parser.add_argument('--device',default='cuda');parser.add_argument('--seed',type=int,default=1000)
+args=parser.parse_args()
+if args.seed<0:parser.error('--seed must be nonnegative')
+name=args.name;out=args.output;trial_id=args.trial_id
+torch.manual_seed(args.seed)
 cp=ROOT/'artifacts/r1-act-formal-40000-run02/train/checkpoints/040000/pretrained_model' if name=='act' else Path('/home/murphy/project/lerobot/outputs/train/smolvla_move_pot_dualcam_20260923_v3/checkpoints/040000/pretrained_model')
+cp=args.checkpoint.resolve() if args.checkpoint else cp
 with contextlib.redirect_stdout(sys.stderr):
-    adapter=(ACTMovePotAdapter if name=='act' else SmolVLAMovePotAdapter)(cp,'cuda');adapter.reset()
+    adapter=(ACTMovePotAdapter(cp,args.device) if name=='act' else SmolVLAMovePotAdapter(cp,args.device,seed=args.seed));adapter.reset()
 (out/'checkpoint-manifest.json').write_text(json.dumps(adapter.checkpoint_manifest,indent=2)+'\n')
 print(json.dumps({'ready':True,'trial_id':trial_id}),flush=True)
 for line in sys.stdin:

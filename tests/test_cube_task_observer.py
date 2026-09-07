@@ -7,7 +7,7 @@ from cross_backend.tape_task_observer import observe_task
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCENE = ROOT / "artifacts/sim-cube-v1-20260925/scene.xml"
+SCENE = ROOT / "assets/so101/cube.xml"
 
 
 class CubeTaskObserverTest(unittest.TestCase):

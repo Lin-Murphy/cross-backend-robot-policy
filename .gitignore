@@ -31,36 +31,6 @@ checkpoints/
 /so101_follower_arm.json
 /so101_leader_arm.json
 
-# Local research notebooks, historical reports and duplicated release bundles.
-/PROJECT_PLAN.md
-/EXPERIMENT_LOG.md
-/DECISIONS.md
-/r0-task-definition-amendment.md
-/reports/
-/release/
-/docs/**
-!/docs/ARCHITECTURE.md
-!/docs/RESULTS.md
-
-# Runs, camera images and videos stay on this machine. Keep only assets
-# required by the reproducible MuJoCo cube example.
-/artifacts/**
-!/artifacts/sim-cube-v1-20260925/
-/artifacts/sim-cube-v1-20260925/**
-!/artifacts/sim-cube-v1-20260925/scene-cube-reachable.xml
-!/artifacts/s0-inventory-20260925/
-/artifacts/s0-inventory-20260925/**
-!/artifacts/s0-inventory-20260925/upstream/
-/artifacts/s0-inventory-20260925/upstream/**
-!/artifacts/s0-inventory-20260925/upstream/README.md
-!/artifacts/s0-inventory-20260925/upstream/LICENSE
-!/artifacts/s0-inventory-20260925/upstream/assets/
-/artifacts/s0-inventory-20260925/upstream/assets/**
-!/artifacts/s0-inventory-20260925/upstream/assets/*.stl
-!/artifacts/sim-cube-v1-20260925/scene.xml
-!/artifacts/sim-v1-scene-20260925/
-/artifacts/sim-v1-scene-20260925/**
-!/artifacts/sim-v1-scene-20260925/scene.xml
-!/artifacts/s1-base-spacing-20260925/
-/artifacts/s1-base-spacing-20260925/**
-!/artifacts/s1-base-spacing-20260925/scene.xml
+# Local run outputs, inference resources, and the reversible cleanup snapshot.
+/artifacts/
+/.cleanup-recovery/
