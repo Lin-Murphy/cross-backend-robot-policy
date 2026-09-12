@@ -4,6 +4,7 @@
 
 | Responsibility | Implementation |
 | --- | --- |
+| Shared per-action lifecycle | [execution_session.py](../src/cross_backend/execution_session.py); [extension guide](EXTENDING.md) |
 | Unified configuration, launch and result aggregation | [evaluation.py](../src/cross_backend/evaluation.py), [evaluate.py](../scripts/evaluate.py); [usage](EVALUATION.md) |
 | Model-specific observations, processors, actions, and reset | [move_pot_policy.py](../src/cross_backend/move_pot_policy.py), [smolvla_move_pot.py](../src/cross_backend/smolvla_move_pot.py) |
 | Backend capabilities, observation identity, action mapping, dispatch and stop receipts | [execution_contract.py](../src/cross_backend/execution_contract.py) |
@@ -78,7 +79,7 @@ Scenes live in `assets/so101/` and use relative mesh paths. They are test/develo
 
 ### Remaining offline tests
 
-Use an environment with NumPy, PyTorch, and OpenCV. `test_smolvla_move_pot.py` still reads local checkpoint metadata from an absolute path, so the complete suite is not yet self-contained on a new machine.
+Use an environment with NumPy, PyTorch, and OpenCV. SmolVLA profile tests use bundled metadata fixtures and do not require downloaded weights. See [reproducible setup](REPRODUCIBILITY.md).
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:scripts:tests:. python -B - <<'PYTEST'
@@ -97,4 +98,4 @@ Tests exercise offline fixtures and simulation, not new hardware rollouts. The r
 
 ## Next engineering work
 
-The unified evaluation entry point now covers the supported native runners. Further work is to remove remaining absolute metadata paths in legacy integrations and tests, and consolidate backend internals where useful. New policy, task, or backend integrations must declare their input/output and feedback capabilities. Formal comparisons need fixed checkpoint identities, paired initial conditions, declared timing, task metrics, and retained raw evidence. The README summarizes current results without a separate versioned results document.
+The unified evaluation entry point now covers the supported native runners. Automatic reports and portable simulation examples are included. Hardware profiles remain site-specific; see [support boundaries](SUPPORT.md). New policy, task, or backend integrations must declare their input/output and feedback capabilities. Formal comparisons need fixed checkpoint identities, paired initial conditions, declared timing, task metrics, and retained raw evidence. The README summarizes current results without a separate versioned results document.

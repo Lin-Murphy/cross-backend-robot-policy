@@ -6,7 +6,7 @@ import unittest
 
 from cross_backend.smolvla_move_pot import SmolVLAMovePotAdapter
 
-CP=Path('/home/murphy/project/lerobot/outputs/train/smolvla_move_pot_dualcam_20260923_v3/checkpoints/040000/pretrained_model')
+CP=Path(__file__).parent / 'fixtures/smolvla-profile'
 
 
 class SmolProfileTests(unittest.TestCase):

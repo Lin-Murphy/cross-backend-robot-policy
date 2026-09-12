@@ -92,7 +92,8 @@ class SharedHookTest(unittest.TestCase):
             self.assertEqual(robot.reads, 0)
             self.assertEqual(guard.goal_packets, 1)
             self.assertEqual([event['event'] for event in events],
-                             ['shared_backend_observation', 'shared_backend_action_receipt'])
+                             ['shared_backend_observation', 'execution_observation', 'execution_request',
+                              'execution_receipt', 'shared_backend_action_receipt'])
             robot.reject = True
             started = time.monotonic_ns()
             guard.source_observation_ns = started

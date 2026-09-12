@@ -50,7 +50,7 @@ class EvaluationTests(unittest.TestCase):
         self.config['python'] = 'venv/bin/python'
         c = self.load()
         self.assertEqual(c['python'], str(executable))
-        self.assertEqual(make_plan(c, self.root / 'out')['jobs'][0]['argv'][0], str(bindir / 'lerobot-eval'))
+        self.assertIn(str(bindir / 'lerobot-eval'), make_plan(c, self.root / 'out')['jobs'][0]['argv'])
 
     def test_reject_invalid_configurations(self):
         cases = [{'episodes': True}, {'episodes': 0}, {'task': 'other'}, {'unknown': 1},
@@ -137,6 +137,10 @@ class EvaluationTests(unittest.TestCase):
             result = run_evaluation(plan, output)
         self.assertEqual(result['execution_status'], 'completed')
         self.assertEqual(result['comparison'][0]['success_rate_known'], 0)
+        report = (output / 'report.md').read_text()
+        self.assertIn('**completed**', report)
+        self.assertIn('0 / 2', report)
+        self.assertIn('[raw](raw/act/eval_info.json)', report)
         self.assertEqual(json.loads((output / 'results.json').read_text()), result)
         with self.assertRaises(FileExistsError): run_evaluation(plan, output)
 
@@ -175,6 +179,9 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(len(result['episodes']), 2)
         self.assertEqual(result['jobs'][1]['execution_status'], 'error')
         self.assertIn('FileNotFoundError', result['jobs'][1]['error'])
+        report = (output / 'report.md').read_text()
+        self.assertIn('FileNotFoundError', report)
+        self.assertIn('| dot | 2 | 0 | 0 / 0 | 0 | 2 | N/A |', report)
 
 
 if __name__ == '__main__':

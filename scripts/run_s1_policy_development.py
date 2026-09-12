@@ -7,6 +7,9 @@ from dataclasses import asdict
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 from cross_backend.tape_sim_backend import TapeSimBackend
+from cross_backend.execution_contract import ActionRequest
+from cross_backend.execution_session import ExecutionSession
+from cross_backend.offline_backend_adapters import SimJointBackendAdapter
 from cross_backend.sim_trial_initial import apply_initial_condition
 from cross_backend.sim_prediction_identity import verify_prediction_response
 from cross_backend.sim_chunk_schedule import SimChunkSchedule
@@ -68,6 +71,9 @@ def run(name):
     q=ReplayChunkQueue(out/'queue.jsonl',trial_id);events=(out/'events.jsonl').open('x');video=None;schedule=None
     result={'trial_id':trial_id,'status':'initializing','hardware_access':False,'formal_trial':False,'physical_alignment_verified':False,'initial_condition_id':initial_metadata['initial_condition_id'] if initial_metadata else None,'initial_file_sha256':initial_metadata['initial_file_sha256'] if initial_metadata else None,'initial_geometry_sha256':initial_metadata['initial_geometry_sha256'] if initial_metadata else None};start=time.monotonic();pred_count=0;selected=0;tick=-1
     result.update(alignment_metadata)
+    execution_log=(out/'execution.jsonl').open('x')
+    adapter=SimJointBackendAdapter(b)
+    session=ExecutionSession(adapter, lambda event: execution_log.write(json.dumps(event)+'\n'))
     try:
         ready=reply()
         if ready.get('ready') is not True or ready.get('trial_id')!=trial_id:raise ValueError('Worker ready trial mismatch')
@@ -111,12 +117,16 @@ def run(name):
         def record_frame(images):video.stdin.write(np.concatenate(list(images.values()),axis=1).tobytes())
         record_frame(b.render())
         for tick in range(MAX_CONTROL_TICKS):
-            now=round(b.data.time*1e9);images=b.render();state=policy_state()
+            frame=adapter.observe()
+            now=frame.state_capture_ns;images=adapter.frames;state=policy_state()
             if not np.isfinite(state).all() or np.any(state<lo) or np.any(state>hi):raise PolicyGateRejected('observed_state_outside_nominal_calibration')
             schedule.capture(now,{'observation_id':f'{trial_id}:frame:{tick}','capture_sim_ns':now,'state':state.copy(),'images':images})
             action=schedule.tick(now,validate)
             if action is not None:held=sim_target(action);last=action.copy();selected+=1
-            physics=b.step_sim_targets(held);facts=observe_task(b);status=evaluator.update(facts)
+            _,_,receipt,_=session.step(lambda observation: ActionRequest(observation.observation_id,
+                observation.joint_names,observation.joint_units,tuple(float(v) for v in held)),observation=frame)
+            if not receipt.accepted:raise PolicyGateRejected(receipt.reason)
+            physics=adapter.last_state;facts=observe_task(b);status=evaluator.update(facts)
             events.write(json.dumps({'trial_id':trial_id,'tick':tick,'new_target':action is not None,'policy_target':last.tolist(),'physics':physics,'facts':asdict(facts),'status':status})+'\n')
             if tick%3==2 or status!='running':record_frame(b.render())
             if status!='running':break
@@ -125,6 +135,9 @@ def run(name):
         result.update(execution_status='stopped' if isinstance(exc,PolicyGateRejected) else 'error',status='stopped_error_or_gate',error=repr(exc),traceback=traceback.format_exc(),selected_actions=selected,control_ticks=tick+1)
         if video:record_frame(b.render())
     finally:
+        try:session.stop()
+        except Exception as exc:result.update(execution_status='error',stop_error=repr(exc))
+        finally:execution_log.close()
         if schedule:schedule.reset();(out/'schedule.json').write_text(json.dumps(schedule.events,indent=2)+'\n')
         if video:video.stdin.close();result['video_exit']=video.wait(timeout=15)
         if worker.poll() is None:

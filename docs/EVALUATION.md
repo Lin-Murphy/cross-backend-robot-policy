@@ -2,7 +2,7 @@
 
 `scripts/evaluate.py` is the common entry point for configuration, model selection,
 launching, evidence retention and result reporting. Backend adapters retain native
-model processors and execution loops. This is a unified orchestration layer, not
+model processors and episode scheduling while each policy action passes through the common execution session. This is a unified orchestration layer, not
 a claim that ACT, DOT and SmolVLA share identical inference implementations.
 
 ## Run
@@ -90,9 +90,10 @@ richer audited RunRecord from the retained raw directory and operator evidence.
 Each invocation retains:
 
 - `plan.json`: resolved configuration, commands, environment overrides and seeds.
-- `logs/<job>.log`: captured native runner output.
+- `logs/<job>.log`: captured native runner output. ALOHA also writes `<job>-execution.jsonl`; MuJoCo writes `execution.jsonl` within each policy raw directory; SO101 retains shared events in its audited event stream.
 - `raw/<job>/`: native summaries, action records and any generated videos.
 - `results.json`: common execution status, episode outcomes and per-policy totals.
+- `report.md`: automatically updated model totals, missing/unknown counts, execution failures, episode reasons and links to raw evidence.
 
 `results.json` is updated after each job and at completion. One failed simulation
 job does not discard another policy's results. Checkpoint weight hashes, scene,
@@ -128,6 +129,8 @@ PYTHONPATH=src python3 -m unittest discover -s tests -p test_evaluation.py -v
 
 Native backend tests still use the environments documented in ARCHITECTURE.md.
 
-## Model and backend studies
+## Model comparison and scope
 
-[Completed model comparisons](STUDY_RESULTS.md) use frozen protocols and native-evidence reconstruction. [Measured simulation/hardware pairing](SIM_REAL_STUDY.md) covers alignment inputs, explicit `max_control_ticks` and the paired evidence schema. `analyze_model_comparison.py` produces two-model reports; `prepare_sim_real_study.py` and `analyze_sim_real.py` prepare and check prospective backend pairs.
+[Completed model comparisons](STUDY_RESULTS.md) use frozen protocols and native-evidence reconstruction. The automatic report is a descriptive summary; `analyze_model_comparison.py` adds verified two-model statistical analysis for a frozen protocol. Simulation/hardware pairing is deferred optional research, not required for either workflow.
+
+See [supported scope](SUPPORT.md) and [setup and resources](REPRODUCIBILITY.md). The MuJoCo example uses a bundled nominal joint mapping for simulation only; it is not a calibration for any physical robot.

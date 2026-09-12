@@ -10,6 +10,8 @@ import subprocess
 import sys
 import time
 
+from cross_backend.evaluation_report import write_report
+
 ROOT = Path(__file__).resolve().parents[2]
 SUPPORTED = {"aloha": ("transfer_cube", {"act", "dot"}),
              "mujoco": ("move_pot", {"act", "smolvla"}),
@@ -145,6 +147,10 @@ def make_plan(config, output, *, approved=False, validate_only=False):
                 argv = ([executable, f'--policy.device={device}'] if name == 'act' else
                         [python, '-B', str(ROOT / 'third_party/lerobot-dot-legacy/lerobot/scripts/eval.py'),
                          f'--device={device}', '--use_amp=false']) + common
+                native = argv if name == 'act' else argv[2:]
+                argv = [python, '-B', str(ROOT / 'scripts/aloha_execution_launcher.py'),
+                        '--trace-file', str(output / 'logs' / (job_id + '-execution.jsonl')),
+                        '--', *native]
             elif backend == 'mujoco':
                 argv = [c.get('sim_python', str(ROOT / '.venv-sim/bin/python')), '-B',
                         str(ROOT / 'scripts/run_s1_policy_development.py'),
@@ -261,6 +267,7 @@ def run_evaluation(plan, output):
                         'MuJoCo seeds control policy sampling, not randomized initial states.',
                         'SO101 task outcome remains unknown pending operator evidence.']}
     write_json(output / 'results.json', result)
+    write_report(result, output)
     interrupted = False
     for job in plan['jobs']:
         started = time.monotonic()
@@ -328,10 +335,12 @@ def run_evaluation(plan, output):
         result['jobs'].append(entry)
         result['comparison'] = aggregate(result['episodes'], c['policies'], 0 if plan['mode'] == 'validate' else c['episodes'])
         write_json(output / 'results.json', result)
+        write_report(result, output)
         if interrupted:
             break
     states = [j['execution_status'] for j in result['jobs']]
     result['execution_status'] = ('interrupted' if interrupted else 'error' if 'error' in states
                                   else 'stopped' if 'stopped' in states else 'completed')
     write_json(output / 'results.json', result)
+    write_report(result, output)
     return result

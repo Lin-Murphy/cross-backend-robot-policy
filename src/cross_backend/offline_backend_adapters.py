@@ -31,6 +31,7 @@ class SimJointBackendAdapter:
         if self.stopped:
             return ActionReceipt(False, request.target, 'simulation_step', 0, None, 'backend_stopped')
         state = self.simulator.step_sim_targets(np.asarray(request.target, dtype=float))
+        self.last_state = state
         return ActionReceipt(True, request.target, 'simulation_step', 0, state['sim_ns'])
 
     def stop(self):

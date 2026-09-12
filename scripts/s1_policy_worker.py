@@ -22,7 +22,7 @@ args=parser.parse_args()
 if args.seed<0:parser.error('--seed must be nonnegative')
 name=args.name;out=args.output;trial_id=args.trial_id
 torch.manual_seed(args.seed)
-cp=ROOT/'artifacts/r1-act-formal-40000-run02/train/checkpoints/040000/pretrained_model' if name=='act' else Path('/home/murphy/project/lerobot/outputs/train/smolvla_move_pot_dualcam_20260923_v3/checkpoints/040000/pretrained_model')
+cp=ROOT / 'models/move-pot' / name
 cp=args.checkpoint.resolve() if args.checkpoint else cp
 with contextlib.redirect_stdout(sys.stderr):
     adapter=(ACTMovePotAdapter(cp,args.device) if name=='act' else SmolVLAMovePotAdapter(cp,args.device,seed=args.seed));adapter.reset()

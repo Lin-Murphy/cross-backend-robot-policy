@@ -2,7 +2,7 @@
 
 Two fresh model comparisons completed through the unified evaluation entry point.
 A task failure is a valid observed result; it does not imply execution failure.
-The prospective simulation/hardware pairing study is not yet complete.
+Simulation/hardware pairing is deferred optional research, not a project acceptance requirement.
 
 ## ALOHA TransferCube
 
@@ -62,7 +62,7 @@ and metrics. CPU and CUDA results are not pooled. Host load was not isolated
 for a dedicated inference-speed benchmark; timing measurements describe these
 deployments and are not causal architecture comparisons.
 
-## Simulation/hardware pairing
+## Optional simulation/hardware pairing — deferred
 
 The new unpaired ACT hardware reference recorded 533 policy dispatches,
 verified return to start (maximum absolute error 6 raw ticks), and an

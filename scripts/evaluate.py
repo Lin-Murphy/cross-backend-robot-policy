@@ -33,6 +33,7 @@ def main():
     except (ValueError, OSError, KeyError, TypeError) as exc:
         parser.exit(2, f'Evaluation configuration error: {exc}\n')
     print(json.dumps({'results': str(args.output.resolve() / 'results.json'),
+                      'report': str(args.output.resolve() / 'report.md'),
                       'execution_status': result['execution_status'], 'comparison': result['comparison']}, indent=2))
     return 0 if result['execution_status'] == 'completed' else 130 if result['execution_status'] == 'interrupted' else 1
 

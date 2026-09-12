@@ -21,7 +21,8 @@ socket.socket.connect=_offline_connect
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 from cross_backend.legacy_bus_audit import install_legacy_bus_audit
 from cross_backend.legacy_so101_sync_guard import LegacyTrialProfile,LegacySyncGuard,LegacyGuardRejected,NAMES
-from cross_backend.execution_contract import ActionRequest, StopReceipt, execute_from_observation
+from cross_backend.execution_contract import ActionRequest, StopReceipt
+from cross_backend.execution_session import ExecutionSession
 from cross_backend.so101_lerobot_backend_adapter import SO101LeRobotBackendAdapter
 from capture_move_pot_readonly import CAL,CAL_SHA
 SMOL_PROFILE=ROOT/'configs/so101-smolvla-bidirectional-followwait18-proposal-20260927.json'
@@ -51,6 +52,8 @@ def install_shared_action_boundary(robot,guard,stop_current,record,trial_id,firs
     original_send=robot.send_action
     adapter=SO101LeRobotBackendAdapter(robot,guard,stop_current,
         approved_trial_id=trial_id,send_action=original_send)
+    session=ExecutionSession(adapter,record)
+    adapter.execution_session=session
     latest=[None];first_saved=[False]
     def on_observation(observation,started_ns):
         frame=adapter.capture(observation,started_ns=started_ns).validate(adapter.capabilities)
@@ -72,14 +75,14 @@ def install_shared_action_boundary(robot,guard,stop_current,record,trial_id,firs
     def send(action):
         frame=latest[0]
         if frame is None:
-            adapter.stop()
+            session.stop()
             raise RuntimeError('shared action without a fresh observation')
         if set(action)!=set(n+'.pos' for n in NAMES):
-            adapter.stop()
+            session.stop()
             raise ValueError('shared action must contain exactly six SO101 joints')
         target=tuple(float(action[n+'.pos']) for n in NAMES)
         request=ActionRequest(frame.observation_id,frame.joint_names,frame.joint_units,target)
-        _,receipt,stop=execute_from_observation(adapter,frame,request)
+        _,_,receipt,stop=session.step(lambda observation: request,observation=frame)
         record({'event':'shared_backend_action_receipt','observation_id':frame.observation_id,
                 'receipt':asdict(receipt),'stop':None if stop is None else asdict(stop)})
         return action
@@ -431,7 +434,9 @@ def execute(cfg,profile,limits,out,shared_boundary=False):
                 ctx.policy.inference,robot,guard,record,profile['max_first_action_samples'])
         strategy=create_strategy(cfg.strategy)
         def immediate_hold():
-            try:hold_current(robot)
+            try:
+                if shared_hooks[0] is not None:shared_hooks[0][2].execution_session.stop()
+                else:hold_current(robot)
             except BaseException as exc:
                 summary['stop_hold_error']=repr(exc)
                 record({'event':'legacy_immediate_hold_error','error':repr(exc),'host_ns':time.perf_counter_ns()})

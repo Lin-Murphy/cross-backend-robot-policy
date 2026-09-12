@@ -160,30 +160,14 @@ class ExecutionBackend(Protocol):
 
 def execute_from_observation(backend: ExecutionBackend, observation: BackendObservation,
                              request: ActionRequest):
-    """Validate and dispatch an already captured frame without another device read."""
-    capabilities = backend.capabilities.validate()
-    try:
-        observation.validate(capabilities)
-        request.validate(observation, capabilities)
-        receipt = backend.dispatch(request).validate(request, capabilities)
-    except BaseException:
-        backend.stop()
-        raise
-    stop_receipt = None
-    if not receipt.accepted:
-        stop_receipt = backend.stop().validate(capabilities)
-    return request, receipt, stop_receipt
+    """Compatibility entry point using the common execution lifecycle."""
+    from .execution_session import ExecutionSession
+    _, request, receipt, stop = ExecutionSession(backend).step(
+        lambda frame: request, observation=observation)
+    return request, receipt, stop
 
 
 def execute_one(backend: ExecutionBackend, action_provider):
-    """One common capture/dispatch/stop boundary; provider returns an action request."""
-    try:
-        observation = backend.observe()
-        request = action_provider(observation)
-        if not isinstance(request, ActionRequest):
-            raise ValueError('provider must return ActionRequest')
-    except BaseException:
-        backend.stop()
-        raise
-    request, receipt, stop_receipt = execute_from_observation(backend, observation, request)
-    return observation, request, receipt, stop_receipt
+    """One common capture/dispatch/stop boundary."""
+    from .execution_session import ExecutionSession
+    return ExecutionSession(backend).step(action_provider)

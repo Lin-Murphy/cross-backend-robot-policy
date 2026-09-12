@@ -1,3 +1,5 @@
+> **Deferred optional research.** This workflow is retained for reference. Camera/table calibration and physical matching are not prerequisites for the unified evaluator or within-backend model comparisons.
+
 # Measured simulation/hardware pairing
 
 The study compares the same policy checkpoint on corresponding measured initial

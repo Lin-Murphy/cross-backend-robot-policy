@@ -20,7 +20,7 @@ flowchart LR
   records --> comparison["Model comparison"]
 ```
 
-Observations feed back from the backend to the policy. Task configuration defines initial conditions and completion rules. The SO101/MuJoCo implementations share observation, action, receipt, and result contracts. A unified evaluation entry point now selects policies, launches the native runners, and records common results. ALOHA retains its two model-specific evaluators underneath this entry point.
+Observations feed back from the backend to the policy. Task configuration defines initial conditions and completion rules. The SO101/MuJoCo implementations share observation, action, receipt, and result contracts. A unified evaluation entry point now selects policies, launches the native runners, and records common results. All three examples now route policy actions through the same execution session for observation/action validation, dispatch receipts, stop handling and event recording. Model processors, scheduling and task semantics remain adapter-specific. See [extension interfaces](docs/EXTENDING.md).
 
 ## Results and current scope
 
@@ -30,9 +30,9 @@ Observations feed back from the backend to the policy. Task configuration define
 | SO101 / SmolVLA | **One confirmed placement**, 494 audited action/dispatch pairs | A successful development run through the shared execution boundary; no success-rate estimate |
 | SO101 / ACT | [**0/3 task successes**](evidence/so101-act-full-cycle-results.json) in three completed 18-second hardware trials; all three returned to their recorded start poses | 533 / 532 / 534 audited policy packets; shared execution works, but reliable tape placement is not established |
 
-The SmolVLA placement did not complete a return-to-start cycle. The three SO101/ACT hardware trials did; the tape remained outside the mat after each trial. They are formal full-cycle attempts, not a paired-initial-state model comparison. Existing SO101 and MuJoCo runs are not a same-policy, paired-initial-state performance study. Formal SO101 model comparison and simulation-to-hardware validation remain open.
+The SmolVLA placement did not complete a return-to-start cycle. The three SO101/ACT hardware trials did; the tape remained outside the mat after each trial. They are formal full-cycle attempts, not a paired-initial-state model comparison. Existing SO101 and MuJoCo runs are not a same-policy, paired-initial-state performance study. Formal SO101 model comparison remains open. Simulation and hardware are evaluated independently.
 
-Fresh unified-entry comparisons on 2026-09-28 completed **30 ALOHA pairs (ACT 14/30, DOT 27/30)** and **10 nominal MuJoCo pairs (ACT 0/10, SmolVLA 0/10; all task timeouts with completed execution)**. [Study results and evidence](docs/STUDY_RESULTS.md) distinguish these from the historical runs. Measured simulation/hardware pairing is in calibration; task failure remains valid evidence.
+Fresh unified-entry comparisons on 2026-09-28 completed **30 ALOHA pairs (ACT 14/30, DOT 27/30)** and **10 nominal MuJoCo pairs (ACT 0/10, SmolVLA 0/10; all task timeouts with completed execution)**. [Study results and evidence](docs/STUDY_RESULTS.md) distinguish these from the historical runs. Simulation/hardware pairing is optional research outside the current delivery scope; task failure remains valid evidence.
 
 [Historical result data](evidence/results.json) retains per-seed scores and hardware audit summaries. Its old raw videos and packet logs were removed during earlier cleanup, so those hardware findings cannot be independently replayed from this repository. The new demo above has separately retained media. SO101, ALOHA, ACT, DOT, and SmolVLA are validated examples with different levels of support, not arbitrary interchangeable combinations.
 
@@ -58,3 +58,7 @@ Fixed-trajectory demos, obsolete training workflows, one-off diagnostics, and du
 - `artifacts/`, `models/`: ignored local run outputs and inference resources.
 
 See [architecture and script responsibilities](docs/ARCHITECTURE.md). Original code uses [MIT](LICENSE); upstream meshes and DOT compatibility code retain their licenses in [third-party notices](THIRD_PARTY_NOTICES.md).
+
+See [supported scope](docs/SUPPORT.md) and [reproducible setup](docs/REPRODUCIBILITY.md). Each unified evaluation now writes a readable `report.md` alongside its JSON results.
+
+[GitHub content policy](docs/PUBLISHING.md): code, interfaces and representative results belong here; complete raw experiment archives are optional separate downloads.
