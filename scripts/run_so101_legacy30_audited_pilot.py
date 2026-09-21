@@ -29,6 +29,7 @@ SMOL_PROFILE=ROOT/'configs/so101-smolvla-bidirectional-followwait18-proposal-202
 ACT_PROFILE=ROOT/'configs/so101-act-shared18-proposal-20260927.json'
 ACT_FULL_CYCLE_PROFILE=ROOT/'configs/so101-act-full-cycle-reset-20260928.json'
 ACT_PREOPEN_PROFILE=ROOT/'configs/so101-act-full-cycle-preopen-20260928.json'
+ACT_UNRESTRICTED_PROFILE=ROOT/'configs/so101-act-full-cycle-unrestricted-once-20260928.json'
 PROFILE=SMOL_PROFILE
 
 
@@ -162,20 +163,28 @@ def load_profile():
     if full_cycle:
         expected_model=ROOT/'artifacts/r1-act-formal-40000-run02/train/checkpoints/040000/pretrained_model'
         calibration=json.loads(CAL.read_text())
-        lower=[calibration[n]['range_min'] for n in NAMES]
-        upper=[calibration[n]['range_max'] for n in NAMES];upper[3]=3265
+        unrestricted=profile.get('unrestricted_motion_raw') is True
+        lower=[0]*6 if unrestricted else [calibration[n]['range_min'] for n in NAMES]
+        upper=[4095]*6 if unrestricted else [calibration[n]['range_max'] for n in NAMES]
+        if not unrestricted:upper[3]=3265
         if (profile.get('policy_type')!='act' or Path(profile['model_path']).resolve()!=expected_model.resolve()
             or profile['fps']!=30 or profile['max_episode_seconds']!=18 or profile['max_goal_packets']!=540
             or profile['raw_lower']!=lower or profile['raw_upper']!=upper
-            or profile['max_feedback_raw']!=[calibration[n]['range_max'] for n in NAMES]
+            or profile['max_feedback_raw']!=([4095]*6 if unrestricted else [calibration[n]['range_max'] for n in NAMES])
             or profile['max_from_feedback']!=[4095]*6 or profile['max_from_last_target']!=[4095]*6
-            or profile['max_measured_rate_ticks_s']!=[1000000]*6
+            or profile['max_measured_rate_ticks_s']!=([1000000000]*6 if unrestricted else [1000000]*6)
             or profile['max_gripper_follow_wait_ns']!=0 or profile['max_gripper_cancel_to_feedback_ticks']!=0
-            or profile['max_first_action_samples']!=1 or profile['return_max_seconds']!=15
+            or profile['max_first_action_samples']!=1 or profile['return_max_seconds']!=(25 if unrestricted else 15)
             or profile['return_nominal_ticks_s']!=180 or profile['return_tolerance_ticks']!=20
             or profile['auto_execute'] is not False or profile['calibration_sha256']!=CAL_SHA
             or digest(CAL)!=CAL_SHA):
             raise ValueError('unexpected ACT full-cycle profile')
+        if unrestricted and (
+            profile.get('approved_unrestricted_start_raw')!=[1969,1111,2899,2838,1971,2301]
+            or profile.get('return_original_preposition_start_raw')!=[1969,1191,2812,2904,1811,2002]
+            or profile.get('preopen_gripper_raw') is not None
+            or profile.get('max_roi_dark_fraction_below_gray_100')!=1.0):
+            raise ValueError('unexpected ACT one-time unrestricted profile')
         if profile.get('preopen_gripper_raw') is not None and (
             profile['preopen_gripper_raw']!=2309 or
             profile.get('preopen_nominal_ticks_s')!=120 or
@@ -415,6 +424,12 @@ def execute(cfg,profile,limits,out,shared_boundary=False):
         if not scene_checked[0]:raise RuntimeError('scene_check_missing')
         if full_cycle:
             summary['start_raw']=dict(position)
+            if profile.get('approved_unrestricted_start_raw') is not None and any(
+                abs(int(position[n])-int(profile['approved_unrestricted_start_raw'][i]))>10
+                for i,n in enumerate(NAMES)):
+                raise RuntimeError('approved_unrestricted_start_pose_changed')
+            summary['return_target_raw']=dict(zip(NAMES,profile['return_original_preposition_start_raw'])) \
+                if profile.get('unrestricted_motion_raw') is True else dict(position)
             summary['return_to_start_requested']=True
             record({'event':'formal_full_cycle_start_pose','raw':position,'host_ns':time.perf_counter_ns()})
             if profile.get('preopen_gripper_raw') is not None:
@@ -446,7 +461,7 @@ def execute(cfg,profile,limits,out,shared_boundary=False):
             if guard.goal_packets<1:raise RuntimeError('formal_attempt_no_policy_goals')
             summary['formal_trial_count']=1
             summary['return_final_raw']=return_to_captured_start(
-                robot.bus,original_sync[0],summary['start_raw'],profile,record)
+                robot.bus,original_sync[0],summary['return_target_raw'],profile,record)
             summary['return_to_start_verified']=True
         summary['status']='ended_unreviewed'
     except LegacyGuardRejected as exc:
@@ -491,11 +506,14 @@ if __name__=='__main__':
     p.add_argument('--policy',choices=('smolvla','act'),default='smolvla')
     p.add_argument('--full-cycle',action='store_true',help='ACT formal full-cycle profile; needs specific motion approval')
     p.add_argument('--preopen-gripper',action='store_true',help='ACT full-cycle trial with an audited gripper-only opening')
+    p.add_argument('--unrestricted-motion-once',action='store_true',help='one approved ACT trial without software joint-motion rejection envelopes')
     args=p.parse_args();args.output.mkdir(parents=True,exist_ok=False)
     if args.full_cycle and (args.policy!='act' or not args.shared_boundary):
         p.error('full-cycle requires ACT and the shared boundary')
     if args.preopen_gripper and not args.full_cycle:p.error('preopen requires full-cycle')
-    PROFILE=ACT_PREOPEN_PROFILE if args.preopen_gripper else ACT_FULL_CYCLE_PROFILE if args.full_cycle else ACT_PROFILE if args.policy=='act' else SMOL_PROFILE
+    if args.unrestricted_motion_once and (not args.full_cycle or args.preopen_gripper):
+        p.error('unrestricted trial requires full-cycle without preopen')
+    PROFILE=ACT_UNRESTRICTED_PROFILE if args.unrestricted_motion_once else ACT_PREOPEN_PROFILE if args.preopen_gripper else ACT_FULL_CYCLE_PROFILE if args.full_cycle else ACT_PROFILE if args.policy=='act' else SMOL_PROFILE
     if args.policy=='act' and args.execute_approved_once and not args.shared_boundary:
         p.error('ACT real rollout requires the shared boundary')
     profile,limits=load_profile()

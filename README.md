@@ -1,64 +1,96 @@
-# Cross-Backend Robot Policy Deployment and Evaluation
+# PolicyBridge — Robot Policy Execution & Evaluation
 
-Reusable interfaces for **running robot policies, evaluating tasks, and comparing results across execution backends**. Current integrations cover SO101 and MuJoCo, with a separate ALOHA ACT/DOT comparison.
+A shared interface for **deploying robot policies, executing actions across backends, and evaluating task outcomes**. Configure a run once, launch it through one entry point, and get a readable report with consistent result fields.
 
-## Policy demo
+ACT, DOT, SmolVLA, SO101 and the simulation environments are example integrations. The project's reusable components are the policy/backend contracts, execution lifecycle and evaluation workflow.
 
-![ACT and DOT on two paired ALOHA initial states](docs/media/aloha-comparison.gif)
-
-[Watch the full-resolution video](docs/media/aloha-comparison.mp4). These are fresh learned-policy rollouts recorded on 2026-09-28, not fixed trajectories. Seed 1000: DOT completes the transfer and ACT does not. Seed 1001: ACT completes it and DOT does not. Both receive the same initial seed per pair; success means episode maximum reward >= 4. Shorter clips hold their last frame for synchronized playback.
-
-The two examples illustrate behavior, not a success-rate estimate. [Demo scores and provenance](evidence/demo-results.json) are separate from the earlier 30-seed study.
-
-## Architecture
+## How it works
 
 ```mermaid
 flowchart LR
-  policies["Different policy models"] --> execution["Shared execution workflow<br/>Policy adaptation · Action conversion · Scheduling checks"]
-  execution --> backend["Execution backend"]
-  backend --> records["Task evaluation and recording<br/>Outcomes · Failure reasons · Trajectories and timing"]
-  records --> comparison["Model comparison"]
+  policy["Policy adapter"] -->|Action request| session["Shared execution session"]
+  session -->|Dispatch| backend["Backend adapter"]
+  backend -->|Observation and receipt| session
+  session -->|Observation| policy
+  session --> records["Execution events"]
+  backend --> task["Task evaluation"]
+  records --> report["Results and comparison report"]
+  task --> report
 ```
 
-Observations feed back from the backend to the policy. Task configuration defines initial conditions and completion rules. The SO101/MuJoCo implementations share observation, action, receipt, and result contracts. A unified evaluation entry point now selects policies, launches the native runners, and records common results. All three examples now route policy actions through the same execution session for observation/action validation, dispatch receipts, stop handling and event recording. Model processors, scheduling and task semantics remain adapter-specific. See [extension interfaces](docs/EXTENDING.md).
+The execution session validates observations and actions, dispatches commands, checks receipts, and handles stopping and event recording. Model preprocessing, chunk scheduling, device setup and backend timing stay in their adapters. Task criteria determine success separately: a completed evaluation can contain a failed task, while an unknown outcome remains unknown.
 
-## Results and current scope
+Simulation and hardware are evaluated independently. Model comparisons use the same backend, task and declared conditions; matching a simulated scene to a physical setup is outside the core scope.
 
-| Evaluation | Recorded result | What it establishes |
-| --- | --- | --- |
-| ALOHA ACT / DOT, 30 paired seeds | **11/30 / 26/30** successful transfers | Comparison of two concrete deployment systems on seeds 1000–1029; evaluator versions and preprocessing differ |
-| SO101 / SmolVLA | **One confirmed placement**, 494 audited action/dispatch pairs | A successful development run through the shared execution boundary; no success-rate estimate |
-| SO101 / ACT | [**0/3 task successes**](evidence/so101-act-full-cycle-results.json) in three completed 18-second hardware trials; all three returned to their recorded start poses | 533 / 532 / 534 audited policy packets; shared execution works, but reliable tape placement is not established |
+## Run an evaluation
 
-The SmolVLA placement did not complete a return-to-start cycle. The three SO101/ACT hardware trials did; the tape remained outside the mat after each trial. They are formal full-cycle attempts, not a paired-initial-state model comparison. Existing SO101 and MuJoCo runs are not a same-policy, paired-initial-state performance study. Formal SO101 model comparison remains open. Simulation and hardware are evaluated independently.
-
-Fresh unified-entry comparisons on 2026-09-28 completed **30 ALOHA pairs (ACT 14/30, DOT 27/30)** and **10 nominal MuJoCo pairs (ACT 0/10, SmolVLA 0/10; all task timeouts with completed execution)**. [Study results and evidence](docs/STUDY_RESULTS.md) distinguish these from the historical runs. Simulation/hardware pairing is optional research outside the current delivery scope; task failure remains valid evidence.
-
-[Historical result data](evidence/results.json) retains per-seed scores and hardware audit summaries. Its old raw videos and packet logs were removed during earlier cleanup, so those hardware findings cannot be independently replayed from this repository. The new demo above has separately retained media. SO101, ALOHA, ACT, DOT, and SmolVLA are validated examples with different levels of support, not arbitrary interchangeable combinations.
-
-## Run and develop
-
-With the local ACT/DOT checkpoints and compatible LeRobot/ALOHA environments prepared:
+Prepare the local checkpoints and compatible model/simulation environments described in the [setup guide](docs/REPRODUCIBILITY.md), then run:
 
 ```bash
 python3 scripts/evaluate.py --config configs/eval-aloha.json \
-  --python /path/to/lerobot/.venv/bin/python --output artifacts/aloha-new
+  --python /path/to/lerobot/.venv/bin/python \
+  --output artifacts/aloha-new
 ```
 
-The example configuration runs two episodes per model; edit `episodes` and `first_seed` for a larger evaluation. [Unified evaluation guide](docs/EVALUATION.md) covers ALOHA, MuJoCo and SO101 configurations, dry runs, and the shared result format. Task failure is recorded separately from execution failure. The command runs simulation only and uses offline model loading. Checkpoints are not distributed here. [Setup, test commands, and script guide](docs/ARCHITECTURE.md#running-and-testing) describe the required environments and supported entry points.
+This example runs ACT and DOT for two simulation episodes each. Edit the configuration to select models, checkpoint paths, episode count and device. Add `--dry-run` to inspect the resolved plan. The output directory must be new; weights are loaded locally and are not bundled or downloaded automatically.
 
-Fixed-trajectory demos, obsolete training workflows, one-off diagnostics, and duplicate release builders have been removed. MuJoCo backend tests retain scene, state-restoration, and task-observer coverage. New physical motion requires an explicitly approved on-site plan; historical profiles are not settings for an arbitrary robot.
+```text
+artifacts/aloha-new/
+├── report.md       # Model totals, outcomes, execution reasons and evidence links
+├── results.json    # Common result fields and provenance hashes
+├── plan.json       # Resolved configuration and native commands
+├── logs/           # Runner output and execution traces
+└── raw/            # Native scores, records and generated media
+```
 
-## Project layout
+See the [evaluation guide](docs/EVALUATION.md) for configuration fields, hardware validation and result semantics.
 
-- `src/cross_backend/`: policy adapters, shared execution, backend implementations, task evaluation, and recording.
-- `scripts/`: retained model runners, calibration/capture tools, and result analysis.
-- `tests/`, `configs/`, `assets/`: tests, current reference profiles, and SO101 simulation scenes/meshes.
-- `evidence/`, `docs/media/`: compact results and the README policy demo.
-- `artifacts/`, `models/`: ignored local run outputs and inference resources.
+## Example integrations
 
-See [architecture and script responsibilities](docs/ARCHITECTURE.md). Original code uses [MIT](LICENSE); upstream meshes and DOT compatibility code retain their licenses in [third-party notices](THIRD_PARTY_NOTICES.md).
+| Backend | Task | Example models | Configuration |
+| --- | --- | --- | --- |
+| ALOHA simulation | Transfer cube between grippers | ACT, DOT | [eval-aloha.json](configs/eval-aloha.json) |
+| MuJoCo simulation | Move object onto a mat | ACT, SmolVLA | [eval-mujoco.json](configs/eval-mujoco.json) |
+| SO101 hardware | Move object onto a mat | ACT, SmolVLA | [eval-so101.json](configs/eval-so101.json) |
 
-See [supported scope](docs/SUPPORT.md) and [reproducible setup](docs/REPRODUCIBILITY.md). Each unified evaluation now writes a readable `report.md` alongside its JSON results.
+All three integrations route policy actions through the shared execution session. Native model processors and outer episode scheduling remain adapter-specific. SO101 supports offline configuration validation and one explicitly approved physical run using its site-specific audited profile.
 
-[GitHub content policy](docs/PUBLISHING.md): code, interfaces and representative results belong here; complete raw experiment archives are optional separate downloads.
+## Example results
+
+The completed simulation study used the unified evaluation entry point:
+
+| Backend / task | Model | Successful tasks | Recorded execution |
+| --- | --- | ---: | --- |
+| ALOHA / transfer cube | ACT | 14 / 30 | All episodes completed |
+| ALOHA / transfer cube | DOT | 27 / 30 | All episodes completed |
+| MuJoCo / move object | ACT | 0 / 10 | All episodes completed; task timeouts |
+| MuJoCo / move object | SmolVLA | 0 / 10 | All episodes completed; task timeouts |
+
+ALOHA used the same requested seeds (2000–2029) and a common reward-based success rule. MuJoCo used ten fixed initial configurations shared by both models. These results describe the tested deployments: ALOHA evaluator/preprocessing implementations differ, and zero successes in MuJoCo do not establish equal model ability. See the [comparison report](docs/STUDY_RESULTS.md) for conditions, uncertainty and evidence references.
+
+Hardware examples include one confirmed SmolVLA placement and an ACT placement with verified return to start. The current [ACT trial summary](evidence/so101-act-full-cycle-results.json) records one success across seven development trials and six verified returns. Trial configurations changed, including the motion-gate settings for the successful run, so these counts are not a controlled success-rate benchmark or an ACT/SmolVLA ranking. The SmolVLA placement did not include a complete return-to-start cycle.
+
+[Watch representative ALOHA runs](docs/EXAMPLES.md). The two video cases illustrate behavior; the table above summarizes the separate 30-episode comparison.
+
+## Extend the project
+
+- **Add a model:** adapt its inputs and outputs to provide an `ActionRequest` from a backend observation. Keep preprocessing, unit conversion and action queues in the policy adapter.
+- **Add a backend:** implement `observe`, `dispatch` and `stop`, and declare joint names, units, cameras, clock and feedback capabilities.
+- **Add a task:** define its initial conditions and completion criteria, then connect its outcomes to the evaluation records.
+
+The [extension guide](docs/EXTENDING.md) includes the common execution interface and integration details. The existing models demonstrate these interfaces; adding another model normally requires an adapter.
+
+## Documentation and repository layout
+
+| Resource | Contents |
+| --- | --- |
+| [Evaluation](docs/EVALUATION.md) | Commands, configurations and report fields |
+| [Extension interfaces](docs/EXTENDING.md) | Policy and backend contracts |
+| [Architecture and tests](docs/ARCHITECTURE.md) | Implementation responsibilities and test commands |
+| [Setup](docs/REPRODUCIBILITY.md) | Environments, checkpoints and resource paths |
+| [Supported scope](docs/SUPPORT.md) | Supported combinations and interpretation boundaries |
+| [Publishing](docs/PUBLISHING.md) | What is included in GitHub and optional evidence bundles |
+
+Source lives in `src/cross_backend/`, entry points in `scripts/`, and example inputs in `configs/` and `assets/`. Tests are under `tests/`. Compact findings and representative media are retained in `evidence/` and `docs/media/`; model weights and full run artifacts remain in ignored local directories. A source checkout does not include every raw experiment record.
+
+Original code uses [MIT](LICENSE). Upstream assets and compatibility code retain their licenses in [third-party notices](THIRD_PARTY_NOTICES.md).

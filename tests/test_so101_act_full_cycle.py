@@ -90,5 +90,26 @@ class FullCycleTest(unittest.TestCase):
             runner.preopen_gripper(bus,lambda *a,**k:0,start,approved,lambda e:None,
                                    clock=lambda:now[0],sleep=sleep)
 
+    def test_approved_one_time_profile_accepts_targets_beyond_cached_calibration(self):
+        with patch.object(runner,'PROFILE',runner.ACT_UNRESTRICTED_PROFILE):
+            approved,limits=runner.load_profile()
+        self.assertEqual(approved['approved_unrestricted_start_raw'],
+                         [1969,1111,2899,2838,1971,2301])
+        self.assertEqual(approved['return_original_preposition_start_raw'],
+                         [1969,1191,2812,2904,1811,2002])
+        self.assertEqual(limits.raw_lower,(0,)*6)
+        self.assertEqual(limits.raw_upper,(4095,)*6)
+        self.assertEqual(limits.max_feedback_raw,(4095,)*6)
+        events=[]
+        guard=LegacySyncGuard(limits,events.append,clock=lambda:1_020_000_000)
+        guard.observe(dict(zip(NAMES,(1969,1111,2899,2838,1971,2301))),
+                      observed_ns=1_000_000_000)
+        reasons,_=guard._goal_reasons(1_020_000_000,42,2,
+            dict(enumerate((1965,866,3032,2815,1976,2299),1)))
+        self.assertEqual(reasons,[])
+        reasons,_=guard._goal_reasons(1_020_000_000,42,2,
+            dict(enumerate((0,4095,4096,0,4095,0),1)))
+        self.assertIn('target_outside_trial_profile:elbow_flex',reasons)
+
 
 if __name__ == '__main__': unittest.main()
