@@ -64,9 +64,15 @@ deployments and are not causal architecture comparisons.
 
 ## Optional simulation/hardware pairing — deferred
 
-The new unpaired ACT hardware reference recorded 533 policy dispatches,
+The first unpaired ACT hardware reference recorded 533 policy dispatches,
 verified return to start (maximum absolute error 6 raw ticks), and an
-operator-confirmed failed placement. This is valid real-world failure evidence. A later unpaired ACT hardware trial completed the placement and returned to start; see the [seven-trial hardware record](../evidence/so101-act-full-cycle-results.json). Neither hardware outcome is one of the prospective paired cases:
+operator-confirmed failed placement. This is valid real-world failure evidence.
+Across seven formal ACT hardware trials, one placement succeeded and six returns
+to start were verified. The successful seventh trial also recorded 533 policy
+dispatches and a verified return; its software joint-motion gates differed from
+earlier trials, so 1/7 is descriptive rather than a controlled success rate.
+See the [seven-trial hardware record](../evidence/so101-act-full-cycle-results.json).
+These hardware outcomes are not among the prospective paired cases:
 
 - The first real policy state was approximately `[-8.09, -55.56, 73.32, 36.62,
   -24.13, 8.63]` in degrees / calibrated gripper units, while the simulation

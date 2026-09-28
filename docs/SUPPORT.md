@@ -6,7 +6,7 @@ The project delivers reusable policy deployment, backend execution, task evaluat
 | --- | --- | --- | --- |
 | ALOHA / transfer_cube | ACT, DOT | Unified launch, native scoring, automatic comparison report | Same requested environment seeds and common reward criterion; native processors/evaluators differ |
 | MuJoCo / move_pot | ACT, SmolVLA | Unified launch, nominal scene, task outcomes, automatic report | Same declared scene, initial states and timing; seeds affect policy sampling only |
-| SO101 / move_pot | ACT, SmolVLA | Offline profile validation; one explicitly approved physical run | Site-specific audited profiles; operator evidence needed for task outcomes; no batch hardware comparison |
+| SO101 / move_pot | ACT, SmolVLA | Offline profile validation; individually approved physical runs | Site-specific audited profiles; operator evidence needed for task outcomes; no batch hardware comparison |
 
 Unsupported model/task/backend combinations are rejected. Adding a model requires an adapter and declared observation/action contracts, not merely a checkpoint path.
 
