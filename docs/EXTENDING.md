@@ -38,3 +38,15 @@ Reset/setup, physical limits, scheduling and task success criteria remain backen
 All examples use the same per-action lifecycle. Native outer episode loops remain adapters because their timing and task semantics differ. SO101 setup/return movements are retained audited device operations, outside the policy-action session.
 
 Use the unified entry point to obtain this integration. Directly calling a third-party evaluator bypasses the repository launcher. Tests use fake devices for hardware; integration checks execute simulations only.
+
+## Copyable starter and contract tests
+
+Start with [the two-joint adapter template](../examples/adapter_template/README.md). It runs entirely in memory, deliberately maps a different model joint order into backend order, and records the same execution events as the integrations. Replace the model calculation and backend I/O while keeping the shared lifecycle unchanged.
+
+```bash
+python3 -m pip install -r requirements-core.txt
+python3 examples/adapter_template/run.py
+python3 scripts/test_core.py
+```
+
+The portable core suite covers contracts, stopped sessions, fake hardware hooks, evaluation aggregation, preflight diagnostics and the template. GitHub Actions runs this suite and the example on Python 3.12 and 3.13 for pushes and pull requests. It does not download models or access devices. Full model and physics checks remain separate from this lightweight CI job.

@@ -36,6 +36,19 @@ python3 scripts/evaluate.py --config configs/eval-aloha.json \
 
 The output directory must be new. Existing evidence is never overwritten.
 
+## Run preflight checks
+
+```bash
+python3 scripts/evaluate.py --config configs/eval-aloha.json \
+  --python /path/to/lerobot/.venv/bin/python --check-environment
+```
+
+This mode needs no output directory and opens no devices. It reports all detected errors together: selected interpreter/module availability, requested CUDA device, checkpoint files and processor state references, model/state/action/camera dimensions, and MuJoCo scene/mesh and nominal calibration inputs. Exit code is 0 when the listed checks pass and 2 when any check fails. If `--output` is supplied, its availability is checked too.
+
+Normal CLI evaluation runs these checks automatically before launching native runners and retains `preflight.json` with the other outputs. Failed preflight prints diagnostics and creates no run directory. `--dry-run` remains configuration/command planning only. `--check-environment` cannot be combined with execution/validation flags.
+
+Passing preflight does not certify weight contents, cached SmolVLA tokenizer/VLM resources, EGL rendering, model inference, or physical calibration. Training units are not inferred from tensor dimensions; adapters declare units and execution contracts check them. SO101 preflight checks the lightweight validation interpreter; its existing `--validate-only` path remains responsible for audited profile resources. Physical device readiness and approval are separate.
+
 ## Supported configurations
 
 | Backend / task | Policies | Example | Behavior |
@@ -90,6 +103,7 @@ richer audited RunRecord from the retained raw directory and operator evidence.
 Each invocation retains:
 
 - `plan.json`: resolved configuration, commands, environment overrides and seeds.
+- `preflight.json`: checks performed before native runners launch.
 - `logs/<job>.log`: captured native runner output. ALOHA also writes `<job>-execution.jsonl`; MuJoCo writes `execution.jsonl` within each policy raw directory; SO101 retains shared events in its audited event stream.
 - `raw/<job>/`: native summaries, action records and any generated videos.
 - `results.json`: common execution status, episode outcomes and per-policy totals.

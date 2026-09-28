@@ -252,12 +252,14 @@ def aggregate(records, policies, expected_episodes=None):
     return rows
 
 
-def run_evaluation(plan, output):
+def run_evaluation(plan, output, *, preflight=None):
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=False)
     (output / 'raw').mkdir()
     (output / 'logs').mkdir()
     write_json(output / 'plan.json', plan)
+    if preflight is not None:
+        write_json(output / 'preflight.json', preflight)
     c = plan['config']
     result = {'schema_version': 1, 'backend': c['backend'], 'task': c['task'],
               'mode': plan['mode'], 'execution_status': 'running', 'jobs': [], 'episodes': [],

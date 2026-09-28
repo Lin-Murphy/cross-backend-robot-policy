@@ -1,0 +1,2 @@
+# Lightweight interfaces, example adapters and core regression tests.
+numpy==2.2.6

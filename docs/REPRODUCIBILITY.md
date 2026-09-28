@@ -11,7 +11,7 @@ python3 scripts/evaluate.py --config configs/eval-mujoco.json \
   --output artifacts/new-evaluation --dry-run
 ```
 
-Dry-run checks configuration and prints commands; it does not prove that environments, weights or graphics drivers are installed. Remove `--dry-run` to execute in prepared environments. Each execution creates `plan.json`, `results.json`, `report.md`, logs and native evidence, including on model-loading failure. Always use a new output directory.
+Dry-run checks configuration and prints commands; it does not prove that environments, weights or graphics drivers are installed. Remove `--dry-run` to execute in prepared environments. The CLI first performs preflight checks; failures print diagnostics without creating a run directory. Once checks pass, execution retains `preflight.json`, `plan.json`, `results.json`, `report.md`, logs and native evidence, including runtime model-loading failures. Always use a new output directory.
 
 ## Resources
 
@@ -37,3 +37,7 @@ Hardware profiles retain site-specific resources and limits. They are not portab
 ## Evidence portability
 
 Keep an entire output directory together: report links to logs and native summaries are relative. The saved plan and JSON provenance preserve original resolved paths and hashes as execution evidence. For formal comparisons, retain frozen protocol/configuration files and source/checkpoint manifests and use `scripts/analyze_model_comparison.py`. A clean-machine end-to-end installation has not been verified.
+
+## Lightweight development checks
+
+Install `requirements-core.txt`, then run `python3 scripts/test_core.py` and `python3 examples/adapter_template/run.py`. The GitHub workflow uses these commands on Python 3.12 and 3.13, independently of local model/robot resources.

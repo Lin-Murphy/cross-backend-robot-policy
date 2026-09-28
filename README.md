@@ -22,6 +22,15 @@ The execution session validates observations and actions, dispatches commands, c
 
 Simulation and hardware are evaluated independently. Model comparisons use the same backend, task and declared conditions; matching a simulated scene to a physical setup is outside the core scope.
 
+## Try the interface without a model or robot
+
+```bash
+python3 -m pip install -r requirements-core.txt
+python3 examples/adapter_template/run.py
+```
+
+The [adapter template](examples/adapter_template/README.md) runs a two-joint memory backend through the shared lifecycle. Copy it to start a new integration; it requires no weights or devices.
+
 ## Run an evaluation
 
 Prepare the local checkpoints and compatible model/simulation environments described in the [setup guide](docs/REPRODUCIBILITY.md), then run:
@@ -32,6 +41,8 @@ python3 scripts/evaluate.py --config configs/eval-aloha.json \
   --output artifacts/aloha-new
 ```
 
+Before launching, the command checks local resources and model feature compatibility. Use `--check-environment` without `--output` to run those diagnostics independently.
+
 This example runs ACT and DOT for two simulation episodes each. Edit the configuration to select models, checkpoint paths, episode count and device. Add `--dry-run` to inspect the resolved plan. The output directory must be new; weights are loaded locally and are not bundled or downloaded automatically.
 
 ```text
@@ -39,6 +50,7 @@ artifacts/aloha-new/
 ├── report.md       # Model totals, outcomes, execution reasons and evidence links
 ├── results.json    # Common result fields and provenance hashes
 ├── plan.json       # Resolved configuration and native commands
+├── preflight.json  # Resource and environment diagnostics
 ├── logs/           # Runner output and execution traces
 └── raw/            # Native scores, records and generated media
 ```
@@ -57,16 +69,14 @@ All three integrations route policy actions through the shared execution session
 
 ## Example results
 
-The completed simulation study used the unified evaluation entry point:
+The ALOHA comparison used the unified evaluation entry point:
 
 | Backend / task | Model | Successful tasks | Recorded execution |
 | --- | --- | ---: | --- |
 | ALOHA / transfer cube | ACT | 14 / 30 | All episodes completed |
 | ALOHA / transfer cube | DOT | 27 / 30 | All episodes completed |
-| MuJoCo / move object | ACT | 0 / 10 | All episodes completed; task timeouts |
-| MuJoCo / move object | SmolVLA | 0 / 10 | All episodes completed; task timeouts |
 
-ALOHA used the same requested seeds (2000–2029) and a common reward-based success rule. MuJoCo used ten fixed initial configurations shared by both models. These results describe the tested deployments: ALOHA evaluator/preprocessing implementations differ, and zero successes in MuJoCo do not establish equal model ability. See the [comparison report](docs/STUDY_RESULTS.md) for conditions, uncertainty and evidence references.
+ALOHA used the same requested seeds (2000–2029) and a common reward-based success rule. These results describe the tested deployments; evaluator versions and preprocessing differ. See the [full study report](docs/STUDY_RESULTS.md) for conditions, uncertainty, other simulation experiments and evidence references.
 
 Hardware examples include one confirmed SmolVLA placement and an ACT placement with verified return to start. The current [ACT trial summary](evidence/so101-act-full-cycle-results.json) records one success across seven development trials and six verified returns. Trial configurations changed, including the motion-gate settings for the successful run, so these counts are not a controlled success-rate benchmark or an ACT/SmolVLA ranking. The SmolVLA placement did not include a complete return-to-start cycle.
 
@@ -77,6 +87,8 @@ Hardware examples include one confirmed SmolVLA placement and an ACT placement w
 - **Add a model:** adapt its inputs and outputs to provide an `ActionRequest` from a backend observation. Keep preprocessing, unit conversion and action queues in the policy adapter.
 - **Add a backend:** implement `observe`, `dispatch` and `stop`, and declare joint names, units, cameras, clock and feedback capabilities.
 - **Add a task:** define its initial conditions and completion criteria, then connect its outcomes to the evaluation records.
+
+Run `python3 scripts/test_core.py` for the portable interface regression suite; the GitHub workflow runs it on pushes and pull requests.
 
 The [extension guide](docs/EXTENDING.md) includes the common execution interface and integration details. The existing models demonstrate these interfaces; adding another model normally requires an adapter.
 
